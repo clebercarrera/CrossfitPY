@@ -1,0 +1,1412 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#15171A" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="CrossFit" />
+<link rel="manifest" href="site.webmanifest" />
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png" />
+<link rel="apple-touch-icon" href="apple-touch-icon.png" />
+<title>CROSSFIT — Controle de Cargas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #15171A;
+    --surface: #1E2124;
+    --surface-2: #262A2E;
+    --line: #33383D;
+    --chalk: #EDEDE7;
+    --chalk-dim: #A4A9AD;
+    --yellow: #E8B923;
+    --yellow-ink: #2A2005;
+    --red: #C1443A;
+    --blue: #3E7CA8;
+    --green: #4C9A66;
+    --radius: 4px;
+    --tab-h: 64px;
+
+    /* Cores das anilhas CrossFit */
+    --plate-25: #C1443A;  /* Vermelho */
+    --plate-20: #3E7CA8;  /* Azul */
+    --plate-15: #E8B923;  /* Amarelo */
+    --plate-10: #4C9A66;  /* Verde */
+    --plate-5:  #EDEDE7;  /* Branco / Cinza claro */
+    --plate-sm: #A4A9AD;  /* Pequenas */
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--chalk);
+    font-family:'Inter',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100dvh;
+    padding-bottom:calc(var(--tab-h) + env(safe-area-inset-bottom));
+  }
+  h1,h2,h3,.num,.brand{
+    font-family:'Oswald',system-ui,sans-serif;
+    font-weight:600;
+    letter-spacing:.01em;
+  }
+  .num{font-variant-numeric:tabular-nums;}
+  button{font-family:inherit;}
+  input,select{font-family:inherit;}
+
+  /* ---------- header ---------- */
+  header{
+    position:sticky; top:0; z-index:10;
+    background:var(--bg);
+    border-bottom:1px solid var(--line);
+    padding:calc(16px + env(safe-area-inset-top)) 20px 14px;
+  }
+  .brand{
+    font-size:22px;
+    color:var(--chalk);
+    display:flex; align-items:center; gap:10px;
+  }
+  .brand span{color:var(--red);}
+  .brand img{
+    height:34px; width:34px; object-fit:cover; border-radius:50%;
+    flex-shrink:0; border:1px solid var(--line);
+  }
+  .brand .brand-text{display:flex; align-items:baseline; gap:8px;}
+  .top-brand-row{display:flex; align-items:center; justify-content:space-between; gap:10px;}
+  .lang-toggle{
+    display:flex; border:1px solid var(--line); border-radius:20px; overflow:hidden;
+    flex-shrink:0; background:var(--bg);
+  }
+  .lang-toggle button{
+    background:none; border:none; cursor:pointer;
+    width:36px; height:36px; font-size:18px;
+    display:flex; align-items:center; justify-content:center;
+    opacity:.45; filter:grayscale(60%);
+    transition:opacity .15s, filter .15s;
+  }
+  .lang-toggle button.active{
+    opacity:1; filter:grayscale(0%);
+    background:var(--surface-2);
+  }
+  .userline{
+    display:flex; justify-content:space-between; align-items:center;
+    margin-top:6px;
+    font-size:13px; color:var(--chalk-dim);
+  }
+  .userline button{
+    background:none; border:none; color:var(--chalk-dim);
+    text-decoration:underline; text-underline-offset:3px;
+    font-size:13px; padding:4px 0; cursor:pointer;
+  }
+
+  main{max-width:520px; margin:0 auto; padding:20px 16px 40px;}
+  .hide{display:none !important;}
+
+  /* ---------- auth screen ---------- */
+  #authView{max-width:400px; margin:calc(40px + env(safe-area-inset-top)) auto 0; padding:0 20px;}
+  .auth-card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:28px 22px;
+  }
+  .auth-card h2{font-size:20px; margin:0 0 4px;}
+  .auth-card p.sub{color:var(--chalk-dim); font-size:14px; margin:0 0 22px;}
+  .field{margin-bottom:14px;}
+  .field label{display:block; font-size:12px; color:var(--chalk-dim); margin-bottom:6px; text-transform:uppercase; letter-spacing:.06em;}
+  .field input{
+    width:100%; background:var(--bg); border:1px solid var(--line);
+    color:var(--chalk); padding:11px 12px; border-radius:var(--radius);
+    font-size:15px;
+  }
+  .field input:focus{outline:2px solid var(--yellow); outline-offset:1px; border-color:var(--yellow);}
+  .btn{
+    display:block; width:100%; border:none; border-radius:var(--radius);
+    padding:13px 16px; font-size:15px; font-weight:600; cursor:pointer;
+    font-family:'Oswald',sans-serif; letter-spacing:.02em;
+  }
+  .btn-primary{background:var(--yellow); color:var(--yellow-ink);}
+  .btn-primary:active{background:#d1a71d;}
+  .btn-ghost{background:transparent; color:var(--chalk); border:1px solid var(--line); margin-top:10px;}
+  .switch-mode{
+    text-align:center; margin-top:16px; font-size:13px; color:var(--chalk-dim);
+  }
+  .switch-mode a{color:var(--yellow); text-decoration:none; cursor:pointer;}
+  .auth-error{
+    background:rgba(193,68,58,.15); border:1px solid var(--red);
+    color:#f0b3ad; font-size:13px; padding:10px 12px; border-radius:var(--radius);
+    margin-bottom:14px; display:none;
+  }
+  .config-warning{
+    background:rgba(232,185,35,.12); border:1px solid var(--yellow);
+    color:var(--chalk); font-size:13px; line-height:1.5; padding:14px 16px;
+    border-radius:var(--radius); margin-bottom:20px;
+  }
+  .config-warning code{background:var(--surface-2); padding:1px 5px; border-radius:3px;}
+
+  /* ---------- tabs ---------- */
+  #tabbar{
+    position:fixed; bottom:0; left:0; right:0; height:var(--tab-h);
+    padding-bottom:env(safe-area-inset-bottom);
+    background:var(--surface); border-top:1px solid var(--line);
+    display:flex; z-index:20;
+  }
+  #tabbar button{
+    flex:1; background:none; border:none; color:var(--chalk-dim);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:3px; cursor:pointer; font-size:11px; letter-spacing:.03em;
+  }
+  #tabbar button svg{width:22px; height:22px; stroke:var(--chalk-dim); fill:none; stroke-width:1.7;}
+  #tabbar button.active{color:var(--yellow);}
+  #tabbar button.active svg{stroke:var(--yellow);}
+
+  /* ---------- section headers ---------- */
+  .section-title{
+    font-size:14px; text-transform:uppercase; letter-spacing:.08em;
+    color:var(--chalk-dim); margin:26px 0 10px;
+  }
+  .section-title:first-child{margin-top:0;}
+
+  /* ---------- RM list ---------- */
+  .rm-card{
+    background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+    padding:16px 18px; margin-bottom:10px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+  }
+  .rm-card .name{font-size:18px; font-weight:600;}
+  .rm-card .meta{font-size:13px; color:var(--chalk-dim); margin-top:3px;}
+  .rm-card .weight{
+    font-size:30px; color:var(--yellow); white-space:nowrap;
+  }
+  .rm-card .weight small{font-size:16px; color:var(--chalk-dim); font-family:'Inter',sans-serif; margin-left:2px;}
+  .rm-card .edit-btn{
+    background:var(--surface-2); border:1px solid var(--line); color:var(--chalk-dim);
+    border-radius:var(--radius); padding:8px 12px; font-size:14px; cursor:pointer;
+  }
+  .empty-state{
+    text-align:center; padding:40px 20px; color:var(--chalk-dim); font-size:15px;
+  }
+  .add-row{
+    display:flex; gap:8px; margin-top:14px;
+  }
+  .add-row select, .add-row input{
+    background:var(--surface); border:1px solid var(--line); color:var(--chalk);
+    padding:12px 10px; border-radius:var(--radius); font-size:16px;
+  }
+  .add-row select{flex:1;}
+  .add-row input#newWeight{flex:0 0 86px; width:86px; text-align:center;}
+  .add-row button{
+    background:var(--yellow); color:var(--yellow-ink); border:none;
+    border-radius:var(--radius); padding:0 16px; font-weight:700; cursor:pointer; font-size:22px;
+    font-family:'Oswald',sans-serif;
+  }
+
+  /* modal for editing */
+  .modal-backdrop{
+    position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:30;
+    display:flex; align-items:flex-end; justify-content:center;
+  }
+  .modal{
+    background:var(--surface); border:1px solid var(--line); border-radius:12px 12px 0 0;
+    width:100%; max-width:520px; padding:22px 20px calc(22px + env(safe-area-inset-bottom));
+  }
+  .modal h3{margin:0 0 16px; font-size:17px;}
+  .modal-actions{display:flex; gap:10px; margin-top:16px;}
+  .modal-actions .btn{flex:1;}
+  .btn-danger{background:transparent; color:var(--red); border:1px solid var(--red);}
+  .info-line{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:12px 0; border-bottom:1px solid var(--line); font-size:15px;
+  }
+  .info-line:last-of-type{border-bottom:none;}
+  .info-label{color:var(--chalk-dim); font-size:13px; text-transform:uppercase; letter-spacing:.05em;}
+  .info-value{font-weight:600;}
+
+  /* ---------- diagrama visual da barra ---------- */
+  .bar-diagram{
+    display:flex; align-items:center; justify-content:center;
+    background:var(--bg); border:1px solid var(--line); border-radius:var(--radius);
+    padding:10px 6px; margin:8px 0 12px; min-height:48px; overflow-x:auto; gap:2px;
+  }
+  .bar-sleeve{
+    background:#555; width:22px; height:8px; border-radius:2px; flex-shrink:0;
+  }
+  .bar-center{
+    background:#333; width:36px; height:6px; border-radius:1px; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center; font-size:8px; color:var(--chalk-dim);
+  }
+  .plate-stack{
+    display:flex; align-items:center; gap:1px;
+  }
+  .plate-stack.left{flex-direction:row-reverse;}
+  .plate{
+    border-radius:2px; flex-shrink:0; display:flex; align-items:center; justify-content:center;
+    font-size:9px; font-family:'Oswald',sans-serif; font-weight:600; color:#fff;
+    text-shadow: 0 1px 1px rgba(0,0,0,0.8);
+  }
+  /* espessuras e alturas proporcionais das anilhas */
+  .p-25{background:var(--plate-25); width:10px; height:38px;}
+  .p-20{background:var(--plate-20); width:9px; height:36px;}
+  .p-15{background:var(--plate-15); width:8px; height:32px; color:#111; text-shadow:none;}
+  .p-10{background:var(--plate-10); width:7px; height:28px;}
+  .p-5 {background:var(--plate-5);  width:6px; height:24px; color:#111; text-shadow:none;}
+  .p-25s{background:var(--plate-sm); width:5px; height:20px; font-size:8px;}
+  .p-125{background:var(--plate-sm); width:4px; height:18px; font-size:7px;}
+
+  /* ---------- modal de percentual ampliado ---------- */
+  .pct-modal{text-align:center;}
+  .pct-modal .pct-modal-zone{
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    font-size:13px; text-transform:uppercase; letter-spacing:.07em; color:var(--chalk-dim);
+    margin-bottom:6px;
+  }
+  .pct-modal-pct{
+    font-family:'Oswald',sans-serif; font-size:40px; font-weight:600;
+    color:var(--chalk-dim); line-height:1;
+  }
+  .pct-modal-val{
+    font-family:'Oswald',sans-serif; font-size:76px; font-weight:600;
+    color:var(--yellow); line-height:1; margin:14px 0 6px;
+  }
+  .pct-modal-val small{
+    font-size:32px; color:var(--chalk-dim); margin-left:8px; font-family:'Inter',sans-serif; font-weight:500;
+  }
+  .pct-modal-plates{
+    font-size:15px; color:var(--chalk); margin-top:14px; padding-top:14px;
+    border-top:1px solid var(--line);
+  }
+  .pct-modal-plates b{color:var(--yellow);}
+
+  /* ---------- calculator ---------- */
+  .calc-box{
+    background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+    padding:16px;
+  }
+  .calc-row{display:flex; gap:8px; margin-bottom:10px;}
+  .calc-row select, .calc-row input{
+    background:var(--bg); border:1px solid var(--line); color:var(--chalk);
+    padding:11px 10px; border-radius:var(--radius); font-size:14px; flex:1; min-width:0;
+  }
+  .unit-toggle{
+    display:flex; border:1px solid var(--line); border-radius:var(--radius); overflow:hidden;
+  }
+  .unit-toggle button{
+    background:var(--bg); color:var(--chalk-dim); border:none; padding:0 14px; cursor:pointer; font-size:13px;
+  }
+  .unit-toggle button.active{background:var(--yellow); color:var(--yellow-ink); font-weight:700;}
+
+  .zone-label{
+    display:flex; align-items:center; gap:8px; margin:22px 0 8px;
+    font-size:13px; text-transform:uppercase; letter-spacing:.07em; color:var(--chalk-dim);
+  }
+  .dot{width:8px; height:8px; border-radius:50%; flex-shrink:0;}
+  .dot.max{background:var(--red);}
+  .dot.strength{background:var(--yellow);}
+  .dot.volume{background:var(--blue);}
+
+  .calc-row.bar-row{align-items:center; gap:10px;}
+  .bar-label{font-size:13px; color:var(--chalk-dim); flex-shrink:0;}
+  .calc-row.bar-row select{flex:1;}
+
+  .pct-row{
+    display:flex; align-items:center; gap:14px;
+    padding:14px 6px; border-bottom:1px solid var(--line);
+    cursor:pointer; border-radius:var(--radius);
+    transition:background .12s;
+  }
+  .pct-row:active{background:var(--surface-2);}
+  .pct-row:last-child{border-bottom:none;}
+  .pct-row.disabled{cursor:default;}
+  .pct-row.disabled:active{background:none;}
+  .pct-row .dot{width:7px; height:30px; border-radius:2px; align-self:stretch; height:auto;}
+  .pct-row .pct{width:66px; font-size:22px; color:var(--chalk-dim); font-family:'Oswald',sans-serif; flex-shrink:0;}
+  .pct-row .valwrap{flex:1; min-width:0;}
+  .pct-row .val{font-size:30px;}
+  .pct-row .val small{font-size:16px; color:var(--chalk-dim); margin-left:3px; font-family:'Inter',sans-serif;}
+  .pct-row .plates{
+    font-size:13px; color:var(--chalk-dim); margin-top:2px;
+    font-family:'Inter',sans-serif; letter-spacing:.01em;
+  }
+  .pct-row .plates b{color:var(--chalk); font-weight:600;}
+  .pct-row .expand-hint{
+    font-size:20px; color:var(--chalk-dim); flex-shrink:0; opacity:.5;
+  }
+
+  .custom-pct{
+    margin-top:20px;
+    background:var(--bg); border:1px solid var(--yellow); border-radius:var(--radius);
+    padding:12px 14px;
+  }
+  .custom-pct .top-row{display:flex; align-items:center; gap:10px;}
+  .custom-pct input{
+    width:70px; background:var(--surface-2); border:1px solid var(--line); color:var(--chalk);
+    padding:10px 8px; border-radius:var(--radius); text-align:center; font-size:17px;
+  }
+  .custom-pct .result{font-size:26px; color:var(--yellow); margin-left:auto;}
+  .custom-pct .plates{
+    font-size:13px; color:var(--chalk-dim); margin-top:6px;
+    font-family:'Inter',sans-serif;
+  }
+  .custom-pct .plates b{color:var(--chalk); font-weight:600;}
+
+  /* ---------- timer tab ---------- */
+  .timer-card{
+    background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+    padding:22px 18px; text-align:center;
+  }
+  .timer-modes{
+    display:flex; border:1px solid var(--line); border-radius:var(--radius); overflow:hidden;
+    margin-bottom:20px; background:var(--bg);
+  }
+  .timer-modes button{
+    flex:1; background:none; border:none; padding:10px; font-size:13px;
+    color:var(--chalk-dim); cursor:pointer; font-weight:600; font-family:'Oswald',sans-serif; letter-spacing:.05em;
+  }
+  .timer-modes button.active{background:var(--yellow); color:var(--yellow-ink);}
+  .timer-display{
+    font-family:'Oswald',sans-serif; font-size:72px; font-weight:700; color:var(--yellow);
+    line-height:1; margin:16px 0; font-variant-numeric:tabular-nums;
+  }
+  .timer-controls{
+    display:flex; gap:10px; margin-top:20px;
+  }
+  .timer-controls .btn{flex:1;}
+  .timer-config{
+    display:flex; gap:10px; justify-content:center; align-items:center; margin-bottom:14px;
+  }
+  .timer-config select, .timer-config input{
+    background:var(--bg); border:1px solid var(--line); color:var(--chalk);
+    padding:8px 12px; border-radius:var(--radius); font-size:15px; text-align:center;
+  }
+
+  .toast{
+    position:fixed; bottom:calc(var(--tab-h) + 14px + env(safe-area-inset-bottom)); left:50%;
+    transform:translateX(-50%); background:var(--surface-2); border:1px solid var(--line);
+    color:var(--chalk); padding:10px 18px; border-radius:20px; font-size:13px; z-index:50;
+    opacity:0; pointer-events:none; transition:opacity .2s;
+  }
+  .toast.show{opacity:1;}
+
+  .loading-row{color:var(--chalk-dim); font-size:14px; padding:20px 0; text-align:center;}
+
+  /* ---------- splash screen ---------- */
+  #splashScreen{
+    position:fixed; inset:0; z-index:9999;
+    background:var(--bg);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px;
+    transition:opacity .45s ease, visibility .45s ease;
+  }
+  #splashScreen img{
+    width:112px; height:112px; border-radius:50%; object-fit:cover;
+    border:2px solid var(--line);
+  }
+  .splash-brand{
+    font-family:'Oswald',sans-serif; font-size:24px; font-weight:600;
+    color:var(--chalk); letter-spacing:.03em;
+  }
+  .splash-brand span{color:var(--red);}
+  .splash-spinner{
+    width:26px; height:26px; margin-top:4px;
+    border:3px solid var(--line); border-top-color:var(--red);
+    border-radius:50%; animation:splash-spin .8s linear infinite;
+  }
+  #splashScreen.hide{opacity:0; visibility:hidden; pointer-events:none;}
+  @keyframes splash-spin{to{transform:rotate(360deg);}}
+</style>
+</head>
+<body>
+
+<!-- ================= SPLASH SCREEN ================= -->
+<div id="splashScreen">
+  <img src="logo.jpg" alt="CrossFit" />
+  <div class="splash-brand">CROSS<span>FIT</span></div>
+  <div class="splash-spinner"></div>
+</div>
+
+<!-- ================= AUTH VIEW ================= -->
+<div id="authView">
+  <div class="auth-card">
+    <div class="top-brand-row" style="margin-bottom:18px;">
+      <div class="brand" style="margin-bottom:0;">
+        <img src="logo.jpg" alt="CrossFit" />
+        <span class="brand-text">CROSS<span>FIT</span></span>
+      </div>
+      <div class="lang-toggle">
+        <button id="langPtAuth" aria-label="Português" title="Português">🇧🇷</button>
+        <button id="langEsAuth" aria-label="Español" title="Español">🇵🇾</button>
+      </div>
+    </div>
+    <h2 id="authTitle">Entrar</h2>
+    <p class="sub" id="authSub">Acesse para controlar seus RMs.</p>
+
+    <div class="auth-error" id="authError"></div>
+
+    <div class="field">
+      <label id="emailLabel">E-mail</label>
+      <input type="email" id="authEmail" autocomplete="email" placeholder="voce@exemplo.com" />
+    </div>
+    <div class="field">
+      <label id="passLabel">Senha</label>
+      <input type="password" id="authPass" autocomplete="current-password" placeholder="••••••••" />
+    </div>
+
+    <button class="btn btn-primary" id="authSubmit">Entrar</button>
+
+    <div class="switch-mode">
+      <span id="switchText">Ainda não tem conta?</span>
+      <a id="switchLink">Criar conta</a>
+    </div>
+  </div>
+
+  <div class="config-warning" id="configWarning" style="margin-top:18px; display:none;">
+    ⚠️ Firebase não configurado. Edite o objeto <code>firebaseConfig</code> no início do arquivo
+    <code>index.html</code> com as credenciais do seu projeto Firebase antes de publicar.
+  </div>
+</div>
+
+<!-- ================= APP VIEW ================= -->
+<div id="appView" class="hide">
+  <header>
+    <div class="top-brand-row">
+      <div class="brand">
+        <img src="logo.jpg" alt="CrossFit" />
+        <span class="brand-text">CROSS<span>FIT</span></span>
+      </div>
+      <div class="lang-toggle">
+        <button id="langPtApp" aria-label="Português" title="Português">🇧🇷</button>
+        <button id="langEsApp" aria-label="Español" title="Español">🇵🇾</button>
+      </div>
+    </div>
+    <div class="userline">
+      <span id="userEmail"></span>
+      <button id="logoutBtn">sair</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- ---- RMs TAB ---- -->
+    <section id="rmsTab">
+      <div class="section-title" id="sectionMyRms">Meus RMs</div>
+      <div id="rmList"><div class="loading-row" id="loadingText">Carregando...</div></div>
+
+      <div class="section-title" id="sectionAddUpdate">Adicionar / Atualizar</div>
+      <div class="add-row">
+        <select id="exerciseSelect"></select>
+        <input type="number" id="newWeight" placeholder="kg" inputmode="decimal" step="0.5" />
+        <button id="addRmBtn" aria-label="Salvar">＋</button>
+      </div>
+      <div class="add-row" style="margin-top:8px;">
+        <input type="text" id="customExerciseName" placeholder="Ou digite um exercício novo..." style="flex:1;" />
+      </div>
+    </section>
+
+    <!-- ---- CALC TAB ---- -->
+    <section id="calcTab" class="hide">
+      <div class="section-title" id="calcTitle">Calculadora de Percentuais</div>
+      <div class="calc-box">
+        <div class="calc-row">
+          <select id="calcExerciseSelect"></select>
+          <div class="unit-toggle">
+            <button id="unitKg" class="active">KG</button>
+            <button id="unitLb">LB</button>
+          </div>
+        </div>
+        <div class="calc-row">
+          <input type="number" id="calcBaseWeight" placeholder="Peso base (RM)" inputmode="decimal" step="0.5" />
+        </div>
+        <div class="calc-row bar-row">
+          <label for="barWeight" class="bar-label" id="barLabel">Barra</label>
+          <select id="barWeight"></select>
+        </div>
+
+        <div class="zone-label"><span class="dot max"></span> <span id="zoneMaxLabel">Esforço máximo · 90–100%</span></div>
+        <div id="zoneMax"></div>
+        <div class="zone-label"><span class="dot strength"></span> <span id="zoneStrengthLabel">Força · 75–89%</span></div>
+        <div id="zoneStrength"></div>
+        <div class="zone-label"><span class="dot volume"></span> <span id="zoneVolumeLabel">Técnica / volume · 40–74%</span></div>
+        <div id="zoneVolume"></div>
+
+        <div class="custom-pct">
+          <div class="top-row">
+            <input type="number" id="customPct" value="70" min="1" max="150" />
+            <span style="color:var(--chalk-dim); font-size:14px;">%</span>
+            <span class="num result" id="customResult">—</span>
+          </div>
+          <div class="plates" id="customPlates"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---- TIMER TAB ---- -->
+    <section id="timerTab" class="hide">
+      <div class="section-title" id="timerTitle">Timer de Treino</div>
+      <div class="timer-card">
+        <div class="timer-modes">
+          <button id="modeRest" class="active" data-mode="rest">Descanso</button>
+          <button id="modeEmom" data-mode="emom">EMOM</button>
+          <button id="modeStopwatch" data-mode="stopwatch">Cronômetro</button>
+        </div>
+
+        <div id="timerConfigArea" class="timer-config">
+          <label id="timerConfigLabel" style="font-size:13px; color:var(--chalk-dim);">Tempo:</label>
+          <select id="timerSelectVal">
+            <option value="60">1 min</option>
+            <option value="90" selected>1 min 30s</option>
+            <option value="120">2 min</option>
+            <option value="180">3 min</option>
+            <option value="300">5 min</option>
+          </select>
+        </div>
+
+        <div class="timer-display num" id="timerDisplay">01:30</div>
+
+        <div class="timer-controls">
+          <button class="btn btn-ghost" id="timerResetBtn">Zerar</button>
+          <button class="btn btn-primary" id="timerStartBtn">Iniciar</button>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div id="tabbar" class="hide">
+  <button id="tabBtnRms" class="active">
+    <svg viewBox="0 0 24 24"><path d="M6 4v16M18 4v16M2 9h4M2 15h4M18 9h4M18 15h4M6 12h12"/></svg>
+    <span id="tabLabelRms">RMs</span>
+  </button>
+  <button id="tabBtnCalc">
+    <svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h.01M12 12h.01M16 12h.01M8 16h.01M12 16h.01M16 16h.01"/></svg>
+    <span id="tabLabelCalc">Calculadora</span>
+  </button>
+  <button id="tabBtnTimer">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2M5 3L2 6M19 3l3 3"/></svg>
+    <span id="tabLabelTimer">Timer</span>
+  </button>
+  <button id="tabBtnInfo">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/></svg>
+    <span id="tabLabelInfo">Info</span>
+  </button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- edit modal -->
+<div class="modal-backdrop hide" id="editModal">
+  <div class="modal">
+    <h3 id="editModalTitle">Editar RM</h3>
+    <div class="field">
+      <label id="editWeightLabel">Peso (kg)</label>
+      <input type="number" id="editWeightInput" inputmode="decimal" step="0.5" />
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-danger" id="deleteRmBtn">Excluir</button>
+      <button class="btn btn-primary" id="saveRmBtn">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- info modal -->
+<div class="modal-backdrop hide" id="infoModal">
+  <div class="modal">
+    <div class="brand" style="margin-bottom:18px;">
+      <img src="logo.jpg" alt="CrossFit" />
+      <span class="brand-text">CROSS<span>FIT</span></span>
+    </div>
+    <h3 id="infoModalTitle">Sobre o app</h3>
+    <div class="info-line">
+      <span class="info-label" id="infoDevLabel">Desenvolvido por</span>
+      <span class="info-value">Cleber Ribeiro</span>
+    </div>
+    <div class="info-line">
+      <span class="info-label" id="infoPhoneLabel">Telefone</span>
+      <span class="info-value">(0995-364442)</span>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-primary" id="closeInfoBtn" style="flex:1;">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- pct zoom modal -->
+<div class="modal-backdrop hide" id="pctModal">
+  <div class="modal pct-modal">
+    <div class="pct-modal-zone">
+      <span class="dot" id="pctModalDot"></span>
+      <span id="pctModalZoneLabel"></span>
+    </div>
+    <div class="pct-modal-pct" id="pctModalPct">100%</div>
+    <div class="pct-modal-val" id="pctModalVal">— <small id="pctModalUnit"></small></div>
+    <div id="pctModalDiagram"></div>
+    <div class="pct-modal-plates" id="pctModalPlates"></div>
+    <div class="modal-actions">
+      <button class="btn btn-primary" id="closePctBtn" style="flex:1;">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+import {
+  getAuth, onAuthStateChanged, createUserWithEmailAndPassword,
+  signInWithEmailAndPassword, signOut
+} from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+import {
+  getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAQVzBvyuSdpqSZ8lBEgSsSDsXBZcBchsw",
+  authDomain: "crossfit-40df0.firebaseapp.com",
+  projectId: "crossfit-40df0",
+  storageBucket: "crossfit-40df0.firebasestorage.app",
+  messagingSenderId: "932415022689",
+  appId: "1:932415022689:web:ee114ffbc0df3e38b8ac20"
+};
+
+const isConfigured = firebaseConfig.apiKey && !firebaseConfig.apiKey.includes("SUA_API_KEY");
+document.getElementById("configWarning").style.display = isConfigured ? "none" : "block";
+
+let app, auth, db;
+if (isConfigured) {
+  app = initializeApp(firebaseConfig);
+  auth = getAuth(app);
+  db = getFirestore(app);
+}
+
+const DEFAULT_EXERCISES = [
+  "Agachamento Livre", "Agachamento Frontal", "Levantamento Terra",
+  "Supino Reto", "Desenvolvimento Militar", "Push Press",
+  "Clean", "Clean & Jerk", "Arranco", "Thruster"
+];
+
+const EXERCISE_LABELS = {
+  "Agachamento Livre":     { pt: "Agachamento Livre",     es: "Sentadilla Trasera" },
+  "Agachamento Frontal":   { pt: "Agachamento Frontal",   es: "Sentadilla Frontal" },
+  "Levantamento Terra":    { pt: "Levantamento Terra",    es: "Peso Muerto" },
+  "Supino Reto":           { pt: "Supino Reto",           es: "Press de Banca" },
+  "Desenvolvimento Militar": { pt: "Desenvolvimento Militar", es: "Press Militar" },
+  "Push Press":            { pt: "Push Press",            es: "Push Press" },
+  "Clean":                 { pt: "Clean",                 es: "Clean (Cargada)" },
+  "Clean & Jerk":          { pt: "Clean & Jerk",           es: "Clean & Jerk" },
+  "Arranco":               { pt: "Arranco",               es: "Arranque (Snatch)" },
+  "Thruster":              { pt: "Thruster",               es: "Thruster" }
+};
+function exerciseLabel(key){
+  return (EXERCISE_LABELS[key] && EXERCISE_LABELS[key][lang]) || key;
+}
+
+// ---------- i18n ----------
+const I18N = {
+  pt: {
+    authTitleLogin: "Entrar", authTitleRegister: "Criar conta",
+    authSubLogin: "Acesse para controlar seus RMs.",
+    authSubRegister: "Crie sua conta para começar a registrar seus RMs.",
+    emailLabel: "E-mail", emailPlaceholder: "voce@exemplo.com",
+    passLabel: "Senha",
+    submitLogin: "Entrar", submitRegister: "Criar conta",
+    switchTextLogin: "Ainda não tem conta?", switchTextRegister: "Já tem conta?",
+    switchLinkLogin: "Criar conta", switchLinkRegister: "Entrar",
+    configWarning: '⚠️ Firebase não configurado. Edite o objeto <code>firebaseConfig</code> no início do arquivo <code>index.html</code> com as credenciais do seu projeto Firebase antes de publicar.',
+    fillFields: "Preencha e-mail e senha.",
+    errInvalidEmail: "E-mail inválido.", errUserNotFound: "Usuário não encontrado.",
+    errWrongPassword: "Senha incorreta.", errInvalidCredential: "E-mail ou senha incorretos.",
+    errEmailInUse: "Este e-mail já está cadastrado.", errWeakPassword: "A senha precisa ter ao menos 6 caracteres.",
+    errGeneric: "Não foi possível concluir. Tente novamente.",
+    logout: "sair", tabRms: "RMs", tabCalc: "Calculadora", tabTimer: "Timer", tabInfo: "Info",
+    sectionMyRms: "Meus RMs", loading: "Carregando...",
+    sectionAddUpdate: "Adicionar / Atualizar", customExercisePlaceholder: "Ou digite um exercício novo...",
+    emptyState: "Nenhum RM registrado ainda.<br>Adicione seu primeiro abaixo ⬇",
+    updatedOn: "Atualizado em", edit: "editar",
+    editModalPrefix: "Editar —", weightLabelKg: "Peso (kg)",
+    deleteBtn: "Excluir", saveBtn: "Salvar",
+    infoTitle: "Sobre o app", developedBy: "Desenvolvido por", phoneLabel: "Telefone", closeBtn: "Fechar",
+    confirmDelete: (name)=>`Excluir o RM de "${name}"?`,
+    toastSaved: "RM salvo", toastSaveError: "Erro ao salvar",
+    toastChooseOrType: "Escolha ou digite um exercício", toastInvalidWeight: "Informe um peso válido",
+    toastUpdated: "Atualizado", toastDeleted: "Excluído",
+    toastLoadError: "Erro ao carregar dados", toastInvalidWeight2: "Peso inválido",
+    toastConfigureFirebase: "Configure o Firebase primeiro",
+    calcTitle: "Calculadora de Percentuais", manualWeight: "Peso manual",
+    basePlaceholder: "Peso base (RM)", barLabel: "Barra",
+    barOlympic: "Olímpica", barWomens: "Feminina", barTechnique: "Técnica",
+    zoneMax: "Esforço máximo · 90–100%", zoneStrength: "Força · 75–89%", zoneVolume: "Técnica / volume · 40–74%",
+    barCovers: (b,u)=>`Peso da barra (${b} ${u}) já cobre essa carga`,
+    onlyBar: (b,u)=>`Só a barra (${b} ${u})`,
+    perSide: "/lado", doesntFit: (r,u)=>`(+${r} ${u} não encaixa)`,
+    timerTitle: "Timer de Treino", modeRest: "Descanso", modeEmom: "EMOM", modeStopwatch: "Cronômetro",
+    btnStart: "Iniciar", btnPause: "Pausar", btnResume: "Retomar", btnReset: "Zerar"
+  },
+  es: {
+    authTitleLogin: "Iniciar sesión", authTitleRegister: "Crear cuenta",
+    authSubLogin: "Accede para controlar tus RMs.",
+    authSubRegister: "Crea tu cuenta para empezar a registrar tus RMs.",
+    emailLabel: "Correo", emailPlaceholder: "tu@ejemplo.com",
+    passLabel: "Contraseña",
+    submitLogin: "Iniciar sesión", submitRegister: "Crear cuenta",
+    switchTextLogin: "¿Aún no tienes cuenta?", switchTextRegister: "¿Ya tienes cuenta?",
+    switchLinkLogin: "Crear cuenta", switchLinkRegister: "Iniciar sesión",
+    configWarning: '⚠️ Firebase no está configurado. Edita el objeto <code>firebaseConfig</code> al inicio del archivo <code>index.html</code> con las credenciales de tu proyecto Firebase antes de publicar.',
+    fillFields: "Completa correo y contraseña.",
+    errInvalidEmail: "Correo inválido.", errUserNotFound: "Usuario no encontrado.",
+    errWrongPassword: "Contraseña incorrecta.", errInvalidCredential: "Correo o contraseña incorrectos.",
+    errEmailInUse: "Este correo ya está registrado.", errWeakPassword: "La contraseña debe tener al menos 6 caracteres.",
+    errGeneric: "No se pudo completar. Intenta de nuevo.",
+    logout: "salir", tabRms: "RMs", tabCalc: "Calculadora", tabTimer: "Timer", tabInfo: "Info",
+    sectionMyRms: "Mis RMs", loading: "Cargando...",
+    sectionAddUpdate: "Agregar / Actualizar", customExercisePlaceholder: "O escribe un ejercicio nuevo...",
+    emptyState: "Aún no tienes ningún RM registrado.<br>Agrega el primero abajo ⬇",
+    updatedOn: "Actualizado el", edit: "editar",
+    editModalPrefix: "Editar —", weightLabelKg: "Peso (kg)",
+    deleteBtn: "Eliminar", saveBtn: "Guardar",
+    infoTitle: "Acerca de la app", developedBy: "Desarrollado por", phoneLabel: "Teléfono", closeBtn: "Cerrar",
+    confirmDelete: (name)=>`¿Eliminar el RM de "${name}"?`,
+    toastSaved: "RM guardado", toastSaveError: "Error al guardar",
+    toastChooseOrType: "Elige o escribe un ejercicio", toastInvalidWeight: "Ingresa un peso válido",
+    toastUpdated: "Actualizado", toastDeleted: "Eliminado",
+    toastLoadError: "Error al cargar los datos", toastInvalidWeight2: "Peso inválido",
+    toastConfigureFirebase: "Configura Firebase primero",
+    calcTitle: "Calculadora de Porcentajes", manualWeight: "Peso manual",
+    basePlaceholder: "Peso base (RM)", barLabel: "Barra",
+    barOlympic: "Olímpica", barWomens: "Feminina", barTechnique: "Técnica",
+    zoneMax: "Esfuerzo máximo · 90–100%", zoneStrength: "Fuerza · 75–89%", zoneVolume: "Técnica / volumen · 40–74%",
+    barCovers: (b,u)=>`El peso de la barra (${b} ${u}) ya cubre esa carga`,
+    onlyBar: (b,u)=>`Solo la barra (${b} ${u})`,
+    perSide: "/lado", doesntFit: (r,u)=>`(+${r} ${u} no encaja)`,
+    timerTitle: "Timer de Entreno", modeRest: "Descanso", modeEmom: "EMOM", modeStopwatch: "Cronómetro",
+    btnStart: "Iniciar", btnPause: "Pausar", btnResume: "Retomar", btnReset: "Reiniciar"
+  }
+};
+let lang = localStorage.getItem("famcross_lang") || "pt";
+function t(key){ return I18N[lang][key]; }
+
+let currentUser = null;
+let rms = {};
+let unsubscribeRms = null;
+let unit = "kg";
+const KG_TO_LB = 2.20462;
+
+const $ = (id) => document.getElementById(id);
+function toast(msg){
+  const t = $("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toast._t);
+  toast._t = setTimeout(()=>t.classList.remove("show"), 1800);
+}
+function slugSafe(name){ return name.trim(); }
+function fmtWeight(kg){
+  const v = unit === "kg" ? kg : kg * KG_TO_LB;
+  return (Math.round(v*10)/10).toString();
+}
+function roundToPlate(kg){
+  const step = unit === "kg" ? 1.25 : 2.5;
+  const v = unit === "kg" ? kg : kg * KG_TO_LB;
+  return Math.round(v/step)*step;
+}
+
+// ---------- anilhas ----------
+const PLATE_SET = {
+  kg: [25, 20, 15, 10, 5, 2.5, 1.25],
+  lb: [45, 35, 25, 10, 5, 2.5]
+};
+function barOptions(){
+  return {
+    kg: [{v:20, key:"barOlympic", w:20, u:"kg"}, {v:15, key:"barWomens", w:15, u:"kg"}, {v:10, key:"barTechnique", w:10, u:"kg"}],
+    lb: [{v:45, key:"barOlympic", w:45, u:"lb"}, {v:35, key:"barWomens", w:35, u:"lb"}, {v:15, key:"barTechnique", w:15, u:"lb"}]
+  }[unit];
+}
+function populateBarSelect(){
+  const sel = $("barWeight");
+  const prevVal = parseFloat(sel.value);
+  const opts = barOptions();
+  sel.innerHTML = "";
+  opts.forEach(o=>{
+    const el = document.createElement("option");
+    el.value = o.v; el.textContent = `${t(o.key)} — ${o.w} ${o.u}`;
+    sel.appendChild(el);
+  });
+  const stillValid = opts.some(o=>o.v === prevVal);
+  sel.value = stillValid ? prevVal : opts[0].v;
+}
+
+function platesForSide(sideWeight){
+  const denoms = PLATE_SET[unit];
+  let remaining = Math.round(sideWeight * 100) / 100;
+  const used = [];
+  for (const d of denoms){
+    let count = 0;
+    while (remaining >= d - 0.001){
+      remaining -= d;
+      count++;
+    }
+    if (count > 0) used.push([d, count]);
+  }
+  return { used, remainder: Math.max(0, Math.round(remaining*100)/100) };
+}
+
+// Gera o HTML visual da barra com as anilhas proporcionalmente
+function renderBarDiagramHtml(totalWeight){
+  const barW = parseFloat($("barWeight")?.value) || (unit==="kg" ? 20 : 45);
+  if (isNaN(totalWeight) || totalWeight <= barW + 0.001) {
+    return `<div class="bar-diagram"><div class="bar-sleeve"></div><div class="bar-center">${barW}</div><div class="bar-sleeve"></div></div>`;
+  }
+  const sideWeight = (totalWeight - barW) / 2;
+  const { used } = platesForSide(sideWeight);
+
+  // expande as anilhas para desenhar individualmente por lado
+  const platesList = [];
+  used.forEach(([d, count]) => {
+    for(let i=0; i<count; i++) platesList.push(d);
+  });
+
+  const getCssClass = (val) => {
+    if (unit === "kg") {
+      if (val === 25) return "p-25";
+      if (val === 20) return "p-20";
+      if (val === 15) return "p-15";
+      if (val === 10) return "p-10";
+      if (val === 5)  return "p-5";
+      if (val === 2.5) return "p-25s";
+      return "p-125";
+    } else {
+      if (val >= 45) return "p-25";
+      if (val >= 35) return "p-20";
+      if (val >= 25) return "p-15";
+      if (val >= 10) return "p-10";
+      return "p-5";
+    }
+  };
+
+  let leftHtml = '<div class="plate-stack left">';
+  platesList.forEach(v => { leftHtml += `<div class="plate ${getCssClass(v)}">${v>=10?v:''}</div>`; });
+  leftHtml += '</div>';
+
+  let rightHtml = '<div class="plate-stack">';
+  platesList.forEach(v => { rightHtml += `<div class="plate ${getCssClass(v)}">${v>=10?v:''}</div>`; });
+  rightHtml += '</div>';
+
+  return `
+    <div class="bar-diagram">
+      ${leftHtml}
+      <div class="bar-sleeve"></div>
+      <div class="bar-center">${barW}</div>
+      <div class="bar-sleeve"></div>
+      ${rightHtml}
+    </div>
+  `;
+}
+
+function platesLabel(totalWeight){
+  const barW = parseFloat($("barWeight")?.value) || (unit==="kg" ? 20 : 45);
+  if (isNaN(totalWeight)) return "";
+  if (totalWeight <= barW + 0.001){
+    return t("barCovers")(barW, unit);
+  }
+  const side = (totalWeight - barW) / 2;
+  const { used, remainder } = platesForSide(side);
+  if (used.length === 0) return t("onlyBar")(barW, unit);
+  const parts = used.map(([d,c]) => c>1 ? `${c}×${d}` : `${d}`);
+  let txt = `<b>${parts.join(" + ")}</b> ${unit}${t("perSide")}`;
+  if (remainder > 0.05) txt += ` <span style="opacity:.7">${t("doesntFit")(remainder, unit)}</span>`;
+  return txt;
+}
+
+function populateExerciseSelects(){
+  const names = new Set([...DEFAULT_EXERCISES, ...Object.keys(rms)]);
+  [$("exerciseSelect"), $("calcExerciseSelect")].forEach(sel=>{
+    const prev = sel.value;
+    sel.innerHTML = "";
+    if (sel.id === "calcExerciseSelect"){
+      const manual = document.createElement("option");
+      manual.value = "";
+      manual.textContent = t("manualWeight");
+      sel.appendChild(manual);
+    }
+    [...names].sort((a,b)=> exerciseLabel(a).localeCompare(exerciseLabel(b), lang)).forEach(n=>{
+      const o = document.createElement("option");
+      o.value = n; o.textContent = exerciseLabel(n);
+      sel.appendChild(o);
+    });
+    if ([...sel.options].some(o=>o.value===prev)) sel.value = prev;
+  });
+}
+
+// ---------- auth UI ----------
+let authMode = "login";
+function refreshAuthTexts(){
+  $("authTitle").textContent = authMode === "login" ? t("authTitleLogin") : t("authTitleRegister");
+  $("authSub").textContent = authMode === "login" ? t("authSubLogin") : t("authSubRegister");
+  $("authSubmit").textContent = authMode === "login" ? t("submitLogin") : t("submitRegister");
+  $("switchText").textContent = authMode === "login" ? t("switchTextLogin") : t("switchTextRegister");
+  $("switchLink").textContent = authMode === "login" ? t("switchLinkLogin") : t("switchLinkRegister");
+}
+$("switchLink").addEventListener("click", ()=>{
+  authMode = authMode === "login" ? "register" : "login";
+  refreshAuthTexts();
+  $("authError").style.display = "none";
+});
+
+$("authSubmit").addEventListener("click", async ()=>{
+  if (!isConfigured){ toast(t("toastConfigureFirebase")); return; }
+  const email = $("authEmail").value.trim();
+  const pass = $("authPass").value;
+  const errBox = $("authError");
+  errBox.style.display = "none";
+  if (!email || !pass){
+    errBox.textContent = t("fillFields");
+    errBox.style.display = "block";
+    return;
+  }
+  try{
+    if (authMode === "login"){
+      await signInWithEmailAndPassword(auth, email, pass);
+    } else {
+      await createUserWithEmailAndPassword(auth, email, pass);
+    }
+  } catch(e){
+    errBox.textContent = traduzErro(e.code);
+    errBox.style.display = "block";
+  }
+});
+
+function traduzErro(code){
+  const map = {
+    "auth/invalid-email": t("errInvalidEmail"),
+    "auth/user-not-found": t("errUserNotFound"),
+    "auth/wrong-password": t("errWrongPassword"),
+    "auth/invalid-credential": t("errInvalidCredential"),
+    "auth/email-already-in-use": t("errEmailInUse"),
+    "auth/weak-password": t("errWeakPassword"),
+  };
+  return map[code] || t("errGeneric");
+}
+
+$("logoutBtn").addEventListener("click", ()=> signOut(auth));
+
+// ---------- idioma ----------
+function applyLanguage(){
+  document.documentElement.lang = lang === "pt" ? "pt-BR" : "es-PY";
+  document.title = lang === "pt" ? "CROSSFIT — Controle de Cargas" : "CROSSFIT — Control de Cargas";
+  [["langPtAuth","langEsAuth"], ["langPtApp","langEsApp"]].forEach(([ptId, esId])=>{
+    $(ptId).classList.toggle("active", lang === "pt");
+    $(esId).classList.toggle("active", lang === "es");
+  });
+
+  refreshAuthTexts();
+  $("emailLabel").textContent = t("emailLabel");
+  $("authEmail").placeholder = t("emailPlaceholder");
+  $("passLabel").textContent = t("passLabel");
+  $("configWarning").innerHTML = t("configWarning");
+
+  $("logoutBtn").textContent = t("logout");
+  $("tabLabelRms").textContent = t("tabRms");
+  $("tabLabelCalc").textContent = t("tabCalc");
+  $("tabLabelTimer").textContent = t("tabTimer");
+  $("tabLabelInfo").textContent = t("tabInfo");
+  $("sectionMyRms").textContent = t("sectionMyRms");
+  $("sectionAddUpdate").textContent = t("sectionAddUpdate");
+  $("customExerciseName").placeholder = t("customExercisePlaceholder");
+  const loadingEl = $("rmList").querySelector(".loading-row");
+  if (loadingEl) loadingEl.textContent = t("loading");
+
+  $("editWeightLabel").textContent = t("weightLabelKg");
+  $("deleteRmBtn").textContent = t("deleteBtn");
+  $("saveRmBtn").textContent = t("saveBtn");
+
+  $("infoModalTitle").textContent = t("infoTitle");
+  $("infoDevLabel").textContent = t("developedBy");
+  $("infoPhoneLabel").textContent = t("phoneLabel");
+  $("closeInfoBtn").textContent = t("closeBtn");
+  $("closePctBtn").textContent = t("closeBtn");
+
+  $("calcTitle").textContent = t("calcTitle");
+  $("calcBaseWeight").placeholder = t("basePlaceholder");
+  $("barLabel").textContent = t("barLabel");
+  $("zoneMaxLabel").textContent = t("zoneMax");
+  $("zoneStrengthLabel").textContent = t("zoneStrength");
+  $("zoneVolumeLabel").textContent = t("zoneVolume");
+  $("timerTitle").textContent = t("timerTitle");
+  updateTimerUI();
+
+  populateExerciseSelects();
+  populateBarSelect();
+  if (currentUser) renderRmList();
+  recalcAll();
+}
+function setLang(l){
+  if (l === lang) return;
+  lang = l;
+  localStorage.setItem("famcross_lang", lang);
+  applyLanguage();
+}
+$("langPtAuth").addEventListener("click", ()=> setLang("pt"));
+$("langEsAuth").addEventListener("click", ()=> setLang("es"));
+$("langPtApp").addEventListener("click", ()=> setLang("pt"));
+$("langEsApp").addEventListener("click", ()=> setLang("es"));
+
+// ---------- splash screen ----------
+const SPLASH_MIN_MS = 900;
+const splashStart = Date.now();
+let splashHidden = false;
+function hideSplash(){
+  if (splashHidden) return;
+  splashHidden = true;
+  const wait = Math.max(0, SPLASH_MIN_MS - (Date.now() - splashStart));
+  setTimeout(()=>{
+    const el = $("splashScreen");
+    el.classList.add("hide");
+    setTimeout(()=> el.remove(), 500);
+  }, wait);
+}
+setTimeout(hideSplash, 6000);
+
+// ---------- auth state ----------
+if (isConfigured){
+  onAuthStateChanged(auth, (user)=>{
+    currentUser = user;
+    if (user){
+      $("authView").classList.add("hide");
+      $("appView").classList.remove("hide");
+      $("tabbar").classList.remove("hide");
+      $("userEmail").textContent = user.email;
+      listenRms();
+    } else {
+      if (unsubscribeRms) unsubscribeRms();
+      $("appView").classList.add("hide");
+      $("tabbar").classList.add("hide");
+      $("authView").classList.remove("hide");
+    }
+    hideSplash();
+  });
+} else {
+  hideSplash();
+}
+
+// ---------- Firestore: RMs ----------
+function listenRms(){
+  const ref = collection(db, "users", currentUser.uid, "maxes");
+  unsubscribeRms = onSnapshot(ref, (snap)=>{
+    rms = {};
+    snap.forEach(d=> rms[d.id] = d.data());
+    renderRmList();
+    populateExerciseSelects();
+    syncCalcBaseFromSelect();
+  }, (err)=>{
+    console.error(err);
+    toast(t("toastLoadError"));
+  });
+}
+
+function renderRmList(){
+  const list = $("rmList");
+  const names = Object.keys(rms).sort((a,b)=> exerciseLabel(a).localeCompare(exerciseLabel(b), lang));
+  if (names.length === 0){
+    list.innerHTML = `<div class="empty-state">${t("emptyState")}</div>`;
+    return;
+  }
+  list.innerHTML = "";
+  names.forEach(name=>{
+    const data = rms[name];
+    const card = document.createElement("div");
+    card.className = "rm-card";
+    const dt = data.updatedAt?.toDate ? data.updatedAt.toDate() : null;
+    const dateStr = dt ? dt.toLocaleDateString(lang === "pt" ? "pt-BR" : "es-PY") : "";
+    card.innerHTML = `
+      <div>
+        <div class="name">${escapeHtml(exerciseLabel(name))}</div>
+        <div class="meta">${dateStr ? t("updatedOn") + " " + dateStr : ""}</div>
+      </div>
+      <div style="display:flex; align-items:center; gap:10px;">
+        <div class="num weight">${fmtWeight(data.weight)}<small>${unit}</small></div>
+        <button class="edit-btn" data-name="${escapeAttr(name)}">${t("edit")}</button>
+      </div>
+    `;
+    list.appendChild(card);
+  });
+  list.querySelectorAll(".edit-btn").forEach(btn=>{
+    btn.addEventListener("click", ()=> openEditModal(btn.dataset.name));
+  });
+}
+function escapeHtml(s){ return s.replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function escapeAttr(s){ return escapeHtml(s); }
+
+$("addRmBtn").addEventListener("click", async ()=>{
+  const custom = $("customExerciseName").value.trim();
+  const chosen = custom || $("exerciseSelect").value;
+  const weightInput = parseFloat($("newWeight").value);
+  if (!chosen){ toast(t("toastChooseOrType")); return; }
+  if (isNaN(weightInput) || weightInput <= 0){ toast(t("toastInvalidWeight")); return; }
+  const weightKg = unit === "kg" ? weightInput : weightInput / KG_TO_LB;
+  try{
+    await setDoc(doc(db, "users", currentUser.uid, "maxes", slugSafe(chosen)), {
+      weight: weightKg,
+      updatedAt: serverTimestamp()
+    });
+    $("newWeight").value = "";
+    $("customExerciseName").value = "";
+    toast(t("toastSaved"));
+  } catch(e){
+    console.error(e);
+    toast(t("toastSaveError"));
+  }
+});
+
+let editingName = null;
+function openEditModal(name){
+  editingName = name;
+  $("editModalTitle").textContent = t("editModalPrefix") + " " + exerciseLabel(name);
+  $("editWeightInput").value = fmtWeight(rms[name].weight);
+  $("editModal").classList.remove("hide");
+}
+$("editModal").addEventListener("click", (e)=>{ if (e.target.id === "editModal") $("editModal").classList.add("hide"); });
+$("saveRmBtn").addEventListener("click", async ()=>{
+  const v = parseFloat($("editWeightInput").value);
+  if (isNaN(v) || v<=0){ toast(t("toastInvalidWeight2")); return; }
+  const weightKg = unit === "kg" ? v : v / KG_TO_LB;
+  await setDoc(doc(db, "users", currentUser.uid, "maxes", editingName), {
+    weight: weightKg, updatedAt: serverTimestamp()
+  });
+  $("editModal").classList.add("hide");
+  toast(t("toastUpdated"));
+});
+$("deleteRmBtn").addEventListener("click", async ()=>{
+  if (!confirm(t("confirmDelete")(exerciseLabel(editingName)))) return;
+  await deleteDoc(doc(db, "users", currentUser.uid, "maxes", editingName));
+  $("editModal").classList.add("hide");
+  toast(t("toastDeleted"));
+});
+
+// ---------- tabs ----------
+$("tabBtnRms").addEventListener("click", ()=> switchTab("rms"));
+$("tabBtnCalc").addEventListener("click", ()=> switchTab("calc"));
+$("tabBtnTimer").addEventListener("click", ()=> switchTab("timer"));
+function switchTab(tab){
+  $("rmsTab").classList.toggle("hide", tab!=="rms");
+  $("calcTab").classList.toggle("hide", tab!=="calc");
+  $("timerTab").classList.toggle("hide", tab!=="timer");
+  $("tabBtnRms").classList.toggle("active", tab==="rms");
+  $("tabBtnCalc").classList.toggle("active", tab==="calc");
+  $("tabBtnTimer").classList.toggle("active", tab==="timer");
+}
+
+// ---------- info modal ----------
+$("tabBtnInfo").addEventListener("click", ()=> $("infoModal").classList.remove("hide"));
+$("infoModal").addEventListener("click", (e)=>{ if (e.target.id === "infoModal") $("infoModal").classList.add("hide"); });
+$("closeInfoBtn").addEventListener("click", ()=> $("infoModal").classList.add("hide"));
+
+// ---------- calculator ----------
+$("unitKg").addEventListener("click", ()=> setUnit("kg"));
+$("unitLb").addEventListener("click", ()=> setUnit("lb"));
+function setUnit(u){
+  if (u === unit) return;
+  unit = u;
+  $("unitKg").classList.toggle("active", u==="kg");
+  $("unitLb").classList.toggle("active", u==="lb");
+  populateBarSelect();
+  syncCalcBaseFromSelect(true);
+  renderRmList();
+}
+
+$("calcExerciseSelect").addEventListener("change", ()=> syncCalcBaseFromSelect());
+function syncCalcBaseFromSelect(forceRecalc){
+  const ex = $("calcExerciseSelect").value;
+  if (ex && rms[ex]){
+    $("calcBaseWeight").value = fmtWeight(rms[ex].weight);
+  }
+  recalcAll();
+}
+$("calcBaseWeight").addEventListener("input", recalcAll);
+$("customPct").addEventListener("input", recalcAll);
+$("barWeight").addEventListener("change", recalcAll);
+
+const ZONE_MAX = [100, 95, 90];
+const ZONE_STRENGTH = [85, 80, 75];
+const ZONE_VOLUME = [70, 65, 60, 50, 40];
+const ZONE_KEY = { max: "zoneMax", strength: "zoneStrength", volume: "zoneVolume" };
+
+function recalcAll(){
+  const base = parseFloat($("calcBaseWeight").value);
+  renderZone("zoneMax", ZONE_MAX, base, "max");
+  renderZone("zoneStrength", ZONE_STRENGTH, base, "strength");
+  renderZone("zoneVolume", ZONE_VOLUME, base, "volume");
+
+  const pct = parseFloat($("customPct").value);
+  const result = $("customResult");
+  const platesEl = $("customPlates");
+  if (!isNaN(base) && !isNaN(pct)){
+    const kgBase = unit === "kg" ? base : base / KG_TO_LB;
+    const total = roundToPlate(kgBase * pct/100);
+    result.textContent = total + " " + unit;
+    platesEl.innerHTML = renderBarDiagramHtml(total) + `<div style="text-align:center; margin-top:4px;">${platesLabel(total)}</div>`;
+  } else {
+    result.textContent = "—";
+    platesEl.innerHTML = "";
+  }
+}
+function renderZone(elId, pcts, base, cls){
+  const el = $(elId);
+  el.innerHTML = "";
+  pcts.forEach(p=>{
+    const row = document.createElement("div");
+    let valStr = "—";
+    let plates = "";
+    let totalKgLb = 0;
+    let hasValue = false;
+    if (!isNaN(base)){
+      const kgBase = unit === "kg" ? base : base / KG_TO_LB;
+      totalKgLb = roundToPlate(kgBase * p/100);
+      valStr = totalKgLb.toString();
+      plates = platesLabel(totalKgLb);
+      hasValue = true;
+    }
+    row.className = "pct-row" + (hasValue ? "" : " disabled");
+    row.innerHTML = `
+      <span class="dot ${cls}"></span>
+      <span class="pct">${p}%</span>
+      <span class="valwrap">
+        <span class="num val">${valStr}<small>${valStr!=="—" ? unit : ""}</small></span>
+        ${plates ? `<div class="plates">${plates}</div>` : ""}
+      </span>
+      ${hasValue ? '<span class="expand-hint">⤢</span>' : ""}
+    `;
+    if (hasValue){
+      row.addEventListener("click", ()=> openPctModal(p, valStr, totalKgLb, cls));
+    }
+    el.appendChild(row);
+  });
+}
+
+// ---------- modal de percentual ampliado ----------
+function openPctModal(pct, valStr, totalWeight, cls){
+  $("pctModalDot").className = "dot " + cls;
+  $("pctModalZoneLabel").textContent = t(ZONE_KEY[cls]);
+  $("pctModalPct").textContent = pct + "%";
+  $("pctModalVal").innerHTML = `${valStr} <small id="pctModalUnit">${unit}</small>`;
+  $("pctModalDiagram").innerHTML = renderBarDiagramHtml(totalWeight);
+  $("pctModalPlates").innerHTML = platesLabel(totalWeight);
+  $("pctModal").classList.remove("hide");
+}
+$("pctModal").addEventListener("click", (e)=>{ if (e.target.id === "pctModal") $("pctModal").classList.add("hide"); });
+$("closePctBtn").addEventListener("click", ()=> $("pctModal").classList.add("hide"));
+
+// ---------- TIMER LOGIC ----------
+let timerMode = "rest"; // rest | emom | stopwatch
+let timerInterval = null;
+let timerSecondsLeft = 90;
+let timerRunning = false;
+
+function updateTimerUI(){
+  const disp = $("timerDisplay");
+  const btn = $("timerStartBtn");
+  const config = $("timerConfigArea");
+
+  $("modeRest").classList.toggle("active", timerMode === "rest");
+  $("modeEmom").classList.toggle("active", timerMode === "emom");
+  $("modeStopwatch").classList.toggle("active", timerMode === "stopwatch");
+
+  if (timerMode === "stopwatch") {
+    config.style.display = "none";
+    disp.textContent = formatTimeMMSS(timerSecondsLeft);
+  } else {
+    config.style.display = "flex";
+    disp.textContent = formatTimeMMSS(timerSecondsLeft);
+  }
+
+  btn.textContent = timerRunning ? t("btnPause") : t("btnStart");
+}
+
+function formatTimeMMSS(sec){
+  const m = Math.floor(sec / 60);
+  const s = sec % 60;
+  return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+document.querySelectorAll(".timer-modes button").forEach(b => {
+  b.addEventListener("click", (e) => {
+    stopTimer();
+    timerMode = e.target.dataset.mode;
+    if (timerMode === "stopwatch") {
+      timerSecondsLeft = 0;
+    } else if (timerMode === "rest") {
+      timerSecondsLeft = parseInt($("timerSelectVal").value) || 90;
+    } else if (timerMode === "emom") {
+      timerSecondsLeft = 60;
+    }
+    updateTimerUI();
+  });
+});
+
+$("timerSelectVal").addEventListener("change", (e)=>{
+  if (!timerRunning && timerMode !== "stopwatch") {
+    timerSecondsLeft = parseInt(e.target.value);
+    updateTimerUI();
+  }
+});
+
+$("timerStartBtn").addEventListener("click", ()=>{
+  if (timerRunning) {
+    pauseTimer();
+  } else {
+    startTimer();
+  }
+});
+
+$("timerResetBtn").addEventListener("click", ()=>{
+  stopTimer();
+  if (timerMode === "stopwatch") {
+    timerSecondsLeft = 0;
+  } else if (timerMode === "rest") {
+    timerSecondsLeft = parseInt($("timerSelectVal").value) || 90;
+  } else if (timerMode === "emom") {
+    timerSecondsLeft = 60;
+  }
+  updateTimerUI();
+});
+
+function startTimer(){
+  timerRunning = true;
+  updateTimerUI();
+  timerInterval = setInterval(()=>{
+    if (timerMode === "stopwatch") {
+      timerSecondsLeft++;
+    } else {
+      if (timerSecondsLeft > 0) {
+        timerSecondsLeft--;
+        if (timerSecondsLeft <= 3 && timerSecondsLeft > 0) {
+          if (navigator.vibrate) navigator.vibrate(100);
+        }
+      }
+      if (timerSecondsLeft === 0) {
+        if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+        if (timerMode === "emom") {
+          timerSecondsLeft = 60; // reinicia o minuto para o próximo round
+        } else {
+          stopTimer();
+        }
+      }
+    }
+    $("timerDisplay").textContent = formatTimeMMSS(timerSecondsLeft);
+  }, 1000);
+}
+
+function pauseTimer(){
+  timerRunning = false;
+  clearInterval(timerInterval);
+  updateTimerUI();
+}
+
+function stopTimer(){
+  timerRunning = false;
+  clearInterval(timerInterval);
+}
+
+// Inicialização
+applyLanguage();
+</script>
+
+</body>
+</html>
