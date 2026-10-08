@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex" />
+<title>QR de presença — CROSSFIT</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{ --bg:#15171A; --surface:#1E2124; --line:#33383D; --chalk:#EDEDE7; --dim:#A4A9AD; --yellow:#E8B923; --red:#C1443A; }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); color:var(--chalk); font-family:'Inter',sans-serif; padding:24px 16px 48px;}
+  .wrap{max-width:460px; margin:0 auto;}
+  h1{font-family:'Oswald',sans-serif; font-weight:600; font-size:22px; margin:0 0 4px;}
+  p.help{color:var(--dim); font-size:14px; margin:0 0 18px; line-height:1.5;}
+  label{display:block; font-size:12px; color:var(--dim); text-transform:uppercase; letter-spacing:.06em; margin-bottom:6px;}
+  input{width:100%; background:var(--surface); border:1px solid var(--line); color:var(--chalk); padding:12px; border-radius:4px; font-size:15px;}
+  input:focus{outline:2px solid var(--yellow); outline-offset:1px;}
+  .btn{display:block; width:100%; margin-top:14px; padding:13px; border:none; border-radius:4px; background:var(--yellow); color:#2A2005; font-family:'Oswald',sans-serif; font-size:16px; font-weight:600; cursor:pointer;}
+
+  /* cartaz imprimível */
+  .poster{
+    margin-top:24px; background:#fff; color:#111; border-radius:8px; padding:28px 20px; text-align:center;
+  }
+  .poster .brand{font-family:'Oswald',sans-serif; font-weight:700; font-size:34px; letter-spacing:.02em;}
+  .poster .brand span{color:var(--red);}
+  .poster .scan{font-family:'Oswald',sans-serif; font-size:22px; margin:6px 0 2px; font-weight:600;}
+  .poster .scan-es{font-size:15px; color:#555; margin-bottom:18px;}
+  #qr{display:inline-block; padding:14px; background:#fff; border:3px solid #111; border-radius:8px;}
+  #qr img, #qr canvas{display:block;}
+  .poster .url{margin-top:14px; font-size:12px; color:#666; word-break:break-all;}
+
+  @media print{
+    body{background:#fff; padding:0;}
+    .noprint{display:none !important;}
+    .poster{margin:0; border-radius:0; padding:40px 20px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="noprint">
+    <h1>QR de presença do box</h1>
+    <p class="help">
+      Confira o endereço do app abaixo (é o link do seu site no GitHub Pages) e imprima o cartaz.
+      Cole na recepção: ao escanear, o aluno abre o app e a presença do dia é registrada.
+    </p>
+    <label for="siteUrl">Endereço do app</label>
+    <input type="url" id="siteUrl" placeholder="https://usuario.github.io/repositorio/" />
+    <button class="btn" id="printBtn">Imprimir cartaz</button>
+  </div>
+
+  <div class="poster">
+    <div class="brand">CROSS<span>FIT</span></div>
+    <div class="scan">Escaneie para registrar sua presença</div>
+    <div class="scan-es">Escanea para registrar tu asistencia</div>
+    <div id="qr"></div>
+    <div class="url" id="urlText"></div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+  // mantenha igual ao CHECKIN_CODE do index.html
+  var CHECKIN_CODE = "box";
+  var input = document.getElementById("siteUrl");
+
+  var base = (location.protocol === "http:" || location.protocol === "https:")
+    ? location.origin + location.pathname.replace(/qr-box\.html$/, "")
+    : "";
+  input.value = base;
+
+  function render(){
+    var raw = input.value.trim();
+    var box = document.getElementById("qr");
+    box.innerHTML = "";
+    if (!raw){ document.getElementById("urlText").textContent = ""; return; }
+    if (raw.slice(-1) !== "/") raw += "/";
+    var full = raw + "?checkin=" + CHECKIN_CODE;
+    document.getElementById("urlText").textContent = full;
+    new QRCode(box, { text: full, width: 240, height: 240, colorDark: "#111111", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.H });
+  }
+  input.addEventListener("input", render);
+  document.getElementById("printBtn").addEventListener("click", function(){ window.print(); });
+  render();
+</script>
+</body>
+</html>
