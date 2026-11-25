@@ -30,6 +30,14 @@
     --green: #4C9A66;
     --radius: 4px;
     --tab-h: 64px;
+
+    /* Cores das anilhas CrossFit */
+    --plate-25: #C1443A;  /* Vermelho */
+    --plate-20: #3E7CA8;  /* Azul */
+    --plate-15: #E8B923;  /* Amarelo */
+    --plate-10: #4C9A66;  /* Verde */
+    --plate-5:  #EDEDE7;  /* Branco / Cinza claro */
+    --plate-sm: #A4A9AD;  /* Pequenas */
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
@@ -55,7 +63,7 @@
     position:sticky; top:0; z-index:10;
     background:var(--bg);
     border-bottom:1px solid var(--line);
-    padding:18px 20px 14px;
+    padding:calc(16px + env(safe-area-inset-top)) 20px 14px;
   }
   .brand{
     font-size:22px;
@@ -99,7 +107,7 @@
   .hide{display:none !important;}
 
   /* ---------- auth screen ---------- */
-  #authView{max-width:400px; margin:60px auto 0; padding:0 20px;}
+  #authView{max-width:400px; margin:calc(40px + env(safe-area-inset-top)) auto 0; padding:0 20px;}
   .auth-card{
     background:var(--surface);
     border:1px solid var(--line);
@@ -189,8 +197,8 @@
     background:var(--surface); border:1px solid var(--line); color:var(--chalk);
     padding:12px 10px; border-radius:var(--radius); font-size:16px;
   }
-  .add-row select{flex:1.3;}
-  .add-row input{flex:1; min-width:0;}
+  .add-row select{flex:1;}
+  .add-row input#newWeight{flex:0 0 86px; width:86px; text-align:center;}
   .add-row button{
     background:var(--yellow); color:var(--yellow-ink); border:none;
     border-radius:var(--radius); padding:0 16px; font-weight:700; cursor:pointer; font-size:22px;
@@ -218,6 +226,36 @@
   .info-label{color:var(--chalk-dim); font-size:13px; text-transform:uppercase; letter-spacing:.05em;}
   .info-value{font-weight:600;}
 
+  /* ---------- diagrama visual da barra ---------- */
+  .bar-diagram{
+    display:flex; align-items:center; justify-content:center;
+    background:var(--bg); border:1px solid var(--line); border-radius:var(--radius);
+    padding:10px 6px; margin:8px 0 12px; min-height:48px; overflow-x:auto; gap:2px;
+  }
+  .bar-sleeve{
+    background:#555; width:22px; height:8px; border-radius:2px; flex-shrink:0;
+  }
+  .bar-center{
+    background:#333; width:36px; height:6px; border-radius:1px; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center; font-size:8px; color:var(--chalk-dim);
+  }
+  .plate-stack{
+    display:flex; align-items:center; gap:1px;
+  }
+  .plate-stack.left{flex-direction:row-reverse;}
+  .plate{
+    border-radius:2px; flex-shrink:0; display:flex; align-items:center; justify-content:center;
+    font-size:9px; font-family:'Oswald',sans-serif; font-weight:600; color:#fff;
+    text-shadow: 0 1px 1px rgba(0,0,0,0.8);
+  }
+  .p-25{background:var(--plate-25); width:10px; height:38px;}
+  .p-20{background:var(--plate-20); width:9px; height:36px;}
+  .p-15{background:var(--plate-15); width:8px; height:32px; color:#111; text-shadow:none;}
+  .p-10{background:var(--plate-10); width:7px; height:28px;}
+  .p-5 {background:var(--plate-5);  width:6px; height:24px; color:#111; text-shadow:none;}
+  .p-25s{background:var(--plate-sm); width:5px; height:20px; font-size:8px;}
+  .p-125{background:var(--plate-sm); width:4px; height:18px; font-size:7px;}
+
   /* ---------- modal de percentual ampliado ---------- */
   .pct-modal{text-align:center;}
   .pct-modal .pct-modal-zone{
@@ -237,7 +275,7 @@
     font-size:32px; color:var(--chalk-dim); margin-left:8px; font-family:'Inter',sans-serif; font-weight:500;
   }
   .pct-modal-plates{
-    font-size:20px; color:var(--chalk); margin-top:18px; padding-top:18px;
+    font-size:15px; color:var(--chalk); margin-top:14px; padding-top:14px;
     border-top:1px solid var(--line);
   }
   .pct-modal-plates b{color:var(--yellow);}
@@ -275,7 +313,7 @@
 
   .pct-row{
     display:flex; align-items:center; gap:14px;
-    padding:16px 6px; border-bottom:1px solid var(--line);
+    padding:14px 6px; border-bottom:1px solid var(--line);
     cursor:pointer; border-radius:var(--radius);
     transition:background .12s;
   }
@@ -286,10 +324,10 @@
   .pct-row .dot{width:7px; height:30px; border-radius:2px; align-self:stretch; height:auto;}
   .pct-row .pct{width:66px; font-size:22px; color:var(--chalk-dim); font-family:'Oswald',sans-serif; flex-shrink:0;}
   .pct-row .valwrap{flex:1; min-width:0;}
-  .pct-row .val{font-size:32px;}
-  .pct-row .val small{font-size:18px; color:var(--chalk-dim); margin-left:3px; font-family:'Inter',sans-serif;}
+  .pct-row .val{font-size:30px;}
+  .pct-row .val small{font-size:16px; color:var(--chalk-dim); margin-left:3px; font-family:'Inter',sans-serif;}
   .pct-row .plates{
-    font-size:14px; color:var(--chalk-dim); margin-top:3px;
+    font-size:13px; color:var(--chalk-dim); margin-top:2px;
     font-family:'Inter',sans-serif; letter-spacing:.01em;
   }
   .pct-row .plates b{color:var(--chalk); font-weight:600;}
@@ -309,10 +347,132 @@
   }
   .custom-pct .result{font-size:26px; color:var(--yellow); margin-left:auto;}
   .custom-pct .plates{
-    font-size:13px; color:var(--chalk-dim); margin-top:8px; padding-top:8px;
-    border-top:1px solid var(--line); font-family:'Inter',sans-serif;
+    font-size:13px; color:var(--chalk-dim); margin-top:6px;
+    font-family:'Inter',sans-serif;
   }
   .custom-pct .plates b{color:var(--chalk); font-weight:600;}
+
+  /* ---------- timer tab ---------- */
+  .timer-card{
+    background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+    padding:22px 18px; text-align:center;
+  }
+  .timer-modes{
+    display:flex; border:1px solid var(--line); border-radius:var(--radius); overflow:hidden;
+    margin-bottom:20px; background:var(--bg);
+  }
+  .timer-modes button{
+    flex:1; background:none; border:none; padding:10px; font-size:13px;
+    color:var(--chalk-dim); cursor:pointer; font-weight:600; font-family:'Oswald',sans-serif; letter-spacing:.05em;
+  }
+  .timer-modes button.active{background:var(--yellow); color:var(--yellow-ink);}
+  .timer-display{
+    font-family:'Oswald',sans-serif; font-size:72px; font-weight:700; color:var(--yellow);
+    line-height:1; margin:16px 0; font-variant-numeric:tabular-nums;
+  }
+  .timer-controls{
+    display:flex; gap:10px; margin-top:20px;
+  }
+  .timer-controls .btn{flex:1;}
+  .timer-config{
+    display:flex; gap:10px; justify-content:center; align-items:center; margin-bottom:14px;
+  }
+  .timer-config select, .timer-config input{
+    background:var(--bg); border:1px solid var(--line); color:var(--chalk);
+    padding:8px 12px; border-radius:var(--radius); font-size:15px; text-align:center;
+  }
+
+  /* ---------- rounds tab (contador de rondas) ---------- */
+  .rounds-card{
+    background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+    padding:20px 16px; text-align:center;
+  }
+  .rounds-goal-bar{
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    margin-bottom:14px; font-size:13px; color:var(--chalk-dim);
+  }
+  .rounds-goal-bar input{
+    width:68px; background:var(--bg); border:1px solid var(--line); color:var(--chalk);
+    padding:6px 8px; border-radius:var(--radius); font-size:15px; text-align:center;
+  }
+  .rounds-display-wrap{
+    background:var(--bg); border:1px solid var(--line); border-radius:var(--radius);
+    padding:18px 12px; margin-bottom:16px; position:relative;
+  }
+  .rounds-number{
+    font-family:'Oswald',sans-serif; font-size:108px; font-weight:700;
+    color:var(--chalk); line-height:0.95; font-variant-numeric:tabular-nums;
+    user-select:none;
+  }
+  .rounds-number.goal-reached{ color:var(--green); }
+  .rounds-goal-sub{
+    font-family:'Oswald',sans-serif; font-size:22px; color:var(--chalk-dim);
+    margin-top:4px;
+  }
+  /* Risquinhos de magnésio (tally marks) */
+  .chalk-marks{
+    display:flex; flex-wrap:wrap; justify-content:center; gap:14px;
+    margin-top:14px; min-height:28px;
+  }
+  .tally-group{
+    position:relative; display:inline-flex; gap:5px; height:26px; align-items:center;
+  }
+  .tally-stick{
+    width:3px; height:24px; background:var(--chalk); border-radius:2px;
+    opacity:0.88; transform:rotate(-2deg);
+  }
+  .tally-stick:nth-child(even){ transform:rotate(2deg); }
+  .tally-slash{
+    position:absolute; left:-3px; right:-3px; top:11px; height:3px;
+    background:var(--yellow); border-radius:2px; transform:rotate(-24deg);
+  }
+  /* Botões gigantes + e - */
+  .rounds-big-btns{
+    display:grid; grid-template-columns: 1fr 2.2fr; gap:12px;
+    margin-bottom:14px;
+  }
+  .btn-round-minus, .btn-round-plus{
+    border:none; border-radius:8px; cursor:pointer;
+    font-family:'Oswald',sans-serif; font-weight:700;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    user-select:none; -webkit-tap-highlight-color:transparent;
+    transition:transform .06s ease, filter .1s ease;
+  }
+  .btn-round-minus:active, .btn-round-plus:active{
+    transform:scale(0.97);
+  }
+  .btn-round-minus{
+    height:130px;
+    background:var(--surface-2); border:2px solid var(--line); color:var(--chalk);
+    font-size:52px; line-height:1;
+  }
+  .btn-round-minus:active{ background:#30353a; }
+  .btn-round-plus{
+    height:130px;
+    background:var(--yellow); color:var(--yellow-ink);
+    font-size:74px; line-height:1;
+    box-shadow: 0 4px 0 #b89116;
+  }
+  .btn-round-plus:active{
+    background:#d6aa1e;
+    box-shadow: 0 1px 0 #b89116;
+    transform:translateY(3px) scale(0.98);
+  }
+  .btn-round-sub{
+    font-family:'Inter',sans-serif; font-size:11px; font-weight:700;
+    text-transform:uppercase; letter-spacing:.08em; margin-top:4px; opacity:0.8;
+  }
+  .rounds-laps{
+    margin-top:14px; text-align:left;
+    max-height:130px; overflow-y:auto;
+    border-top:1px solid var(--line); padding-top:8px;
+  }
+  .lap-item{
+    display:flex; justify-content:space-between; font-size:12px;
+    color:var(--chalk-dim); padding:4px 4px;
+    border-bottom:1px dashed rgba(255,255,255,0.06);
+  }
+  .lap-item b{ color:var(--chalk); font-family:'Oswald',sans-serif; font-size:13px; }
 
   .toast{
     position:fixed; bottom:calc(var(--tab-h) + 14px + env(safe-area-inset-bottom)); left:50%;
@@ -323,30 +483,6 @@
   .toast.show{opacity:1;}
 
   .loading-row{color:var(--chalk-dim); font-size:14px; padding:20px 0; text-align:center;}
-
-  /* ---------- presença ---------- */
-  .stat-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:6px;}
-  .stat-card{
-    background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
-    padding:16px; text-align:center;
-  }
-  .stat-card .stat-num{font-family:'Oswald',sans-serif; font-size:44px; font-weight:600; color:var(--yellow); line-height:1;}
-  .stat-card .stat-label{font-size:13px; color:var(--chalk-dim); text-transform:uppercase; letter-spacing:.06em; margin-top:6px;}
-  .att-row{
-    display:flex; align-items:center; justify-content:space-between; gap:10px;
-    background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
-    padding:14px 16px; margin-bottom:8px;
-  }
-  .att-row .att-date{font-size:16px; font-weight:600; text-transform:capitalize;}
-  .att-row .att-time{font-family:'Oswald',sans-serif; font-size:20px; color:var(--chalk-dim);}
-  .checkin-modal{text-align:center;}
-  .checkin-icon{
-    width:84px; height:84px; margin:4px auto 14px; border-radius:50%;
-    background:rgba(76,154,102,.18); border:2px solid var(--green);
-    display:flex; align-items:center; justify-content:center; font-size:44px; color:var(--green);
-  }
-  .checkin-modal h3{font-size:24px; margin-bottom:6px;}
-  .checkin-modal .checkin-when{color:var(--chalk-dim); font-size:15px; text-transform:capitalize;}
 
   /* ---------- splash screen ---------- */
   #splashScreen{
@@ -496,15 +632,67 @@
       </div>
     </section>
 
-    <!-- ---- PRESENÇA TAB ---- -->
-    <section id="attTab" class="hide">
-      <div class="section-title" id="attTitle">Minhas presenças</div>
-      <div class="stat-grid">
-        <div class="stat-card"><div class="stat-num num" id="attMonthNum">0</div><div class="stat-label" id="attMonthLabel">Neste mês</div></div>
-        <div class="stat-card"><div class="stat-num num" id="attTotalNum">0</div><div class="stat-label" id="attTotalLabel">Total</div></div>
+    <!-- ---- ROUNDS TAB (CONTADOR DE RONDAS) ---- -->
+    <section id="roundsTab" class="hide">
+      <div class="section-title" id="roundsTitle">Contador de Rondas</div>
+      <div class="rounds-card">
+        <div class="rounds-goal-bar">
+          <label for="roundsGoalInput" id="roundsGoalLabel">Meta de rondas (opcional):</label>
+          <input type="number" id="roundsGoalInput" placeholder="∞" min="1" max="999" inputmode="numeric" />
+        </div>
+
+        <div class="rounds-display-wrap">
+          <div class="rounds-number" id="roundsCountDisplay">0</div>
+          <div class="rounds-goal-sub hide" id="roundsGoalSub"></div>
+          <!-- Risquinhos estilo giz no piso -->
+          <div class="chalk-marks" id="chalkMarks"></div>
+        </div>
+
+        <div class="rounds-big-btns">
+          <button class="btn-round-minus" id="roundMinusBtn" aria-label="Diminuir ronda">
+            −
+            <span class="btn-round-sub" id="roundMinusSub">Corrigir</span>
+          </button>
+          <button class="btn-round-plus" id="roundPlusBtn" aria-label="Adicionar ronda">
+            ＋
+            <span class="btn-round-sub" id="roundPlusSub">+1 Ronda</span>
+          </button>
+        </div>
+
+        <button class="btn btn-ghost" id="roundsResetBtn">Zerar contador</button>
+
+        <div class="rounds-laps hide" id="roundsLaps"></div>
       </div>
-      <div class="section-title" id="attHistoryTitle">Histórico</div>
-      <div id="attList"></div>
+    </section>
+
+    <!-- ---- TIMER TAB ---- -->
+    <section id="timerTab" class="hide">
+      <div class="section-title" id="timerTitle">Timer de Treino</div>
+      <div class="timer-card">
+        <div class="timer-modes">
+          <button id="modeRest" class="active" data-mode="rest">Descanso</button>
+          <button id="modeEmom" data-mode="emom">EMOM</button>
+          <button id="modeStopwatch" data-mode="stopwatch">Cronômetro</button>
+        </div>
+
+        <div id="timerConfigArea" class="timer-config">
+          <label id="timerConfigLabel" style="font-size:13px; color:var(--chalk-dim);">Tempo:</label>
+          <select id="timerSelectVal">
+            <option value="60">1 min</option>
+            <option value="90" selected>1 min 30s</option>
+            <option value="120">2 min</option>
+            <option value="180">3 min</option>
+            <option value="300">5 min</option>
+          </select>
+        </div>
+
+        <div class="timer-display num" id="timerDisplay">01:30</div>
+
+        <div class="timer-controls">
+          <button class="btn btn-ghost" id="timerResetBtn">Zerar</button>
+          <button class="btn btn-primary" id="timerStartBtn">Iniciar</button>
+        </div>
+      </div>
     </section>
   </main>
 </div>
@@ -518,9 +706,13 @@
     <svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h.01M12 12h.01M16 12h.01M8 16h.01M12 16h.01M16 16h.01"/></svg>
     <span id="tabLabelCalc">Calculadora</span>
   </button>
-  <button id="tabBtnAtt">
-    <svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4M9 15l2 2 4-4"/></svg>
-    <span id="tabLabelAtt">Presença</span>
+  <button id="tabBtnRounds">
+    <svg viewBox="0 0 24 24"><path d="M4 6v12M8 6v12M12 6v12M16 6v12M2 16L18 8"/></svg>
+    <span id="tabLabelRounds">Rondas</span>
+  </button>
+  <button id="tabBtnTimer">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2M5 3L2 6M19 3l3 3"/></svg>
+    <span id="tabLabelTimer">Timer</span>
   </button>
   <button id="tabBtnInfo">
     <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/></svg>
@@ -541,18 +733,6 @@
     <div class="modal-actions">
       <button class="btn btn-danger" id="deleteRmBtn">Excluir</button>
       <button class="btn btn-primary" id="saveRmBtn">Salvar</button>
-    </div>
-  </div>
-</div>
-
-<!-- check-in modal -->
-<div class="modal-backdrop hide" id="checkinModal">
-  <div class="modal checkin-modal">
-    <div class="checkin-icon">✓</div>
-    <h3 id="checkinTitle">Presença registrada!</h3>
-    <div class="checkin-when" id="checkinWhen"></div>
-    <div class="modal-actions">
-      <button class="btn btn-primary" id="closeCheckinBtn" style="flex:1;">Fechar</button>
     </div>
   </div>
 </div>
@@ -588,6 +768,7 @@
     </div>
     <div class="pct-modal-pct" id="pctModalPct">100%</div>
     <div class="pct-modal-val" id="pctModalVal">— <small id="pctModalUnit"></small></div>
+    <div id="pctModalDiagram"></div>
     <div class="pct-modal-plates" id="pctModalPlates"></div>
     <div class="modal-actions">
       <button class="btn btn-primary" id="closePctBtn" style="flex:1;">Fechar</button>
@@ -596,29 +777,15 @@
 </div>
 
 <script type="module">
-/* =========================================================================
-   CROSSFIT — CrossFit RM tracker
-   Stack: Firebase Auth (email/senha) + Firestore, hospedado no GitHub Pages.
-
-   COMO CONFIGURAR
-   1. Crie um projeto em https://console.firebase.google.com
-   2. Ative Authentication > Sign-in method > E-mail/senha
-   3. Crie um banco Firestore (modo produção)
-   4. Cole as credenciais do seu app web abaixo em `firebaseConfig`
-   5. Aplique as regras de segurança sugeridas no fim deste arquivo
-   6. Suba este arquivo (index.html) para o repositório do GitHub (GitHub Pages)
-   ========================================================================= */
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
 import {
   getAuth, onAuthStateChanged, createUserWithEmailAndPassword,
   signInWithEmailAndPassword, signOut
 } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
 import {
-  getFirestore, collection, doc, getDoc, setDoc, deleteDoc, onSnapshot, serverTimestamp
+  getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
 
-// ⬇️⬇️ SUBSTITUA pelas credenciais do SEU projeto Firebase ⬇️⬇️
 const firebaseConfig = {
   apiKey: "AIzaSyAQVzBvyuSdpqSZ8lBEgSsSDsXBZcBchsw",
   authDomain: "crossfit-40df0.firebaseapp.com",
@@ -643,7 +810,7 @@ const DEFAULT_EXERCISES = [
   "Supino Reto", "Desenvolvimento Militar", "Push Press",
   "Clean", "Clean & Jerk", "Arranco", "Thruster"
 ];
-// nomes exibidos por idioma; a chave (id do documento no Firestore) permanece fixa
+
 const EXERCISE_LABELS = {
   "Agachamento Livre":     { pt: "Agachamento Livre",     es: "Sentadilla Trasera" },
   "Agachamento Frontal":   { pt: "Agachamento Frontal",   es: "Sentadilla Frontal" },
@@ -677,11 +844,7 @@ const I18N = {
     errWrongPassword: "Senha incorreta.", errInvalidCredential: "E-mail ou senha incorretos.",
     errEmailInUse: "Este e-mail já está cadastrado.", errWeakPassword: "A senha precisa ter ao menos 6 caracteres.",
     errGeneric: "Não foi possível concluir. Tente novamente.",
-    logout: "sair", tabRms: "RMs", tabCalc: "Calculadora", tabInfo: "Info", tabAtt: "Presença",
-    attTitle: "Minhas presenças", attMonth: "Neste mês", attTotal: "Total", attHistory: "Histórico",
-    attEmpty: "Nenhuma presença registrada ainda.<br>Escaneie o QR do box ao chegar.",
-    checkinOk: "Presença registrada!", checkinAlready: "Você já registrou presença hoje",
-    checkinError: "Erro ao registrar presença",
+    logout: "sair", tabRms: "RMs", tabCalc: "Calculadora", tabRounds: "Rondas", tabTimer: "Timer", tabInfo: "Info",
     sectionMyRms: "Meus RMs", loading: "Carregando...",
     sectionAddUpdate: "Adicionar / Atualizar", customExercisePlaceholder: "Ou digite um exercício novo...",
     emptyState: "Nenhum RM registrado ainda.<br>Adicione seu primeiro abaixo ⬇",
@@ -702,6 +865,11 @@ const I18N = {
     barCovers: (b,u)=>`Peso da barra (${b} ${u}) já cobre essa carga`,
     onlyBar: (b,u)=>`Só a barra (${b} ${u})`,
     perSide: "/lado", doesntFit: (r,u)=>`(+${r} ${u} não encaixa)`,
+    roundsTitle: "Contador de Rondas", roundsGoalLabel: "Meta de rondas (opcional):",
+    roundMinusSub: "Corrigir", roundPlusSub: "+1 Ronda", roundsReset: "Zerar contador",
+    roundsGoalDone: "Meta concluída!", roundLabelSingle: "Ronda",
+    timerTitle: "Timer de Treino", modeRest: "Descanso", modeEmom: "EMOM", modeStopwatch: "Cronômetro",
+    btnStart: "Iniciar", btnPause: "Pausar", btnResume: "Retomar", btnReset: "Zerar"
   },
   es: {
     authTitleLogin: "Iniciar sesión", authTitleRegister: "Crear cuenta",
@@ -718,11 +886,7 @@ const I18N = {
     errWrongPassword: "Contraseña incorrecta.", errInvalidCredential: "Correo o contraseña incorrectos.",
     errEmailInUse: "Este correo ya está registrado.", errWeakPassword: "La contraseña debe tener al menos 6 caracteres.",
     errGeneric: "No se pudo completar. Intenta de nuevo.",
-    logout: "salir", tabRms: "RMs", tabCalc: "Calculadora", tabInfo: "Info", tabAtt: "Asistencia",
-    attTitle: "Mis asistencias", attMonth: "Este mes", attTotal: "Total", attHistory: "Historial",
-    attEmpty: "Aún no hay asistencias registradas.<br>Escanea el QR del box al llegar.",
-    checkinOk: "¡Asistencia registrada!", checkinAlready: "Ya registraste asistencia hoy",
-    checkinError: "Error al registrar la asistencia",
+    logout: "salir", tabRms: "RMs", tabCalc: "Calculadora", tabRounds: "Rondas", tabTimer: "Timer", tabInfo: "Info",
     sectionMyRms: "Mis RMs", loading: "Cargando...",
     sectionAddUpdate: "Agregar / Actualizar", customExercisePlaceholder: "O escribe un ejercicio nuevo...",
     emptyState: "Aún no tienes ningún RM registrado.<br>Agrega el primero abajo ⬇",
@@ -738,23 +902,27 @@ const I18N = {
     toastConfigureFirebase: "Configura Firebase primero",
     calcTitle: "Calculadora de Porcentajes", manualWeight: "Peso manual",
     basePlaceholder: "Peso base (RM)", barLabel: "Barra",
-    barOlympic: "Olímpica", barWomens: "Femenina", barTechnique: "Técnica",
+    barOlympic: "Olímpica", barWomens: "Feminina", barTechnique: "Técnica",
     zoneMax: "Esfuerzo máximo · 90–100%", zoneStrength: "Fuerza · 75–89%", zoneVolume: "Técnica / volumen · 40–74%",
     barCovers: (b,u)=>`El peso de la barra (${b} ${u}) ya cubre esa carga`,
     onlyBar: (b,u)=>`Solo la barra (${b} ${u})`,
     perSide: "/lado", doesntFit: (r,u)=>`(+${r} ${u} no encaja)`,
+    roundsTitle: "Contador de Rondas", roundsGoalLabel: "Meta de rondas (opcional):",
+    roundMinusSub: "Corregir", roundPlusSub: "+1 Ronda", roundsReset: "Reiniciar contador",
+    roundsGoalDone: "¡Meta completada!", roundLabelSingle: "Ronda",
+    timerTitle: "Timer de Entreno", modeRest: "Descanso", modeEmom: "EMOM", modeStopwatch: "Cronómetro",
+    btnStart: "Iniciar", btnPause: "Pausar", btnResume: "Retomar", btnReset: "Reiniciar"
   }
 };
 let lang = localStorage.getItem("famcross_lang") || "pt";
 function t(key){ return I18N[lang][key]; }
 
 let currentUser = null;
-let rms = {};          // { exerciseName: {weight, updatedAt} }
+let rms = {};
 let unsubscribeRms = null;
-let unit = "kg";        // kg | lb
+let unit = "kg";
 const KG_TO_LB = 2.20462;
 
-// ---------- helpers ----------
 const $ = (id) => document.getElementById(id);
 function toast(msg){
   const t = $("toast");
@@ -769,7 +937,6 @@ function fmtWeight(kg){
   return (Math.round(v*10)/10).toString();
 }
 function roundToPlate(kg){
-  // arredonda para o incremento de carga mais comum (2.5kg / 5lb por par de anilhas)
   const step = unit === "kg" ? 1.25 : 2.5;
   const v = unit === "kg" ? kg : kg * KG_TO_LB;
   return Math.round(v/step)*step;
@@ -799,7 +966,7 @@ function populateBarSelect(){
   const stillValid = opts.some(o=>o.v === prevVal);
   sel.value = stillValid ? prevVal : opts[0].v;
 }
-// decompõe o peso por lado nas anilhas disponíveis (algoritmo guloso)
+
 function platesForSide(sideWeight){
   const denoms = PLATE_SET[unit];
   let remaining = Math.round(sideWeight * 100) / 100;
@@ -814,8 +981,59 @@ function platesForSide(sideWeight){
   }
   return { used, remainder: Math.max(0, Math.round(remaining*100)/100) };
 }
+
+function renderBarDiagramHtml(totalWeight){
+  const barW = parseFloat($("barWeight")?.value) || (unit==="kg" ? 20 : 45);
+  if (isNaN(totalWeight) || totalWeight <= barW + 0.001) {
+    return `<div class="bar-diagram"><div class="bar-sleeve"></div><div class="bar-center">${barW}</div><div class="bar-sleeve"></div></div>`;
+  }
+  const sideWeight = (totalWeight - barW) / 2;
+  const { used } = platesForSide(sideWeight);
+
+  const platesList = [];
+  used.forEach(([d, count]) => {
+    for(let i=0; i<count; i++) platesList.push(d);
+  });
+
+  const getCssClass = (val) => {
+    if (unit === "kg") {
+      if (val === 25) return "p-25";
+      if (val === 20) return "p-20";
+      if (val === 15) return "p-15";
+      if (val === 10) return "p-10";
+      if (val === 5)  return "p-5";
+      if (val === 2.5) return "p-25s";
+      return "p-125";
+    } else {
+      if (val >= 45) return "p-25";
+      if (val >= 35) return "p-20";
+      if (val >= 25) return "p-15";
+      if (val >= 10) return "p-10";
+      return "p-5";
+    }
+  };
+
+  let leftHtml = '<div class="plate-stack left">';
+  platesList.forEach(v => { leftHtml += `<div class="plate ${getCssClass(v)}">${v>=10?v:''}</div>`; });
+  leftHtml += '</div>';
+
+  let rightHtml = '<div class="plate-stack">';
+  platesList.forEach(v => { rightHtml += `<div class="plate ${getCssClass(v)}">${v>=10?v:''}</div>`; });
+  rightHtml += '</div>';
+
+  return `
+    <div class="bar-diagram">
+      ${leftHtml}
+      <div class="bar-sleeve"></div>
+      <div class="bar-center">${barW}</div>
+      <div class="bar-sleeve"></div>
+      ${rightHtml}
+    </div>
+  `;
+}
+
 function platesLabel(totalWeight){
-  const barW = parseFloat($("barWeight").value) || (unit==="kg" ? 20 : 45);
+  const barW = parseFloat($("barWeight")?.value) || (unit==="kg" ? 20 : 45);
   if (isNaN(totalWeight)) return "";
   if (totalWeight <= barW + 0.001){
     return t("barCovers")(barW, unit);
@@ -850,7 +1068,7 @@ function populateExerciseSelects(){
 }
 
 // ---------- auth UI ----------
-let authMode = "login"; // login | register
+let authMode = "login";
 function refreshAuthTexts(){
   $("authTitle").textContent = authMode === "login" ? t("authTitleLogin") : t("authTitleRegister");
   $("authSub").textContent = authMode === "login" ? t("authSubLogin") : t("authSubRegister");
@@ -919,14 +1137,9 @@ function applyLanguage(){
   $("logoutBtn").textContent = t("logout");
   $("tabLabelRms").textContent = t("tabRms");
   $("tabLabelCalc").textContent = t("tabCalc");
+  $("tabLabelRounds").textContent = t("tabRounds");
+  $("tabLabelTimer").textContent = t("tabTimer");
   $("tabLabelInfo").textContent = t("tabInfo");
-  $("tabLabelAtt").textContent = t("tabAtt");
-  $("attTitle").textContent = t("attTitle");
-  $("attMonthLabel").textContent = t("attMonth");
-  $("attTotalLabel").textContent = t("attTotal");
-  $("attHistoryTitle").textContent = t("attHistory");
-  $("checkinTitle").textContent = t("checkinOk");
-  $("closeCheckinBtn").textContent = t("closeBtn");
   $("sectionMyRms").textContent = t("sectionMyRms");
   $("sectionAddUpdate").textContent = t("sectionAddUpdate");
   $("customExerciseName").placeholder = t("customExercisePlaceholder");
@@ -950,9 +1163,19 @@ function applyLanguage(){
   $("zoneStrengthLabel").textContent = t("zoneStrength");
   $("zoneVolumeLabel").textContent = t("zoneVolume");
 
+  $("roundsTitle").textContent = t("roundsTitle");
+  $("roundsGoalLabel").textContent = t("roundsGoalLabel");
+  $("roundMinusSub").textContent = t("roundMinusSub");
+  $("roundPlusSub").textContent = t("roundPlusSub");
+  $("roundsResetBtn").textContent = t("roundsReset");
+  renderRoundsUI();
+
+  $("timerTitle").textContent = t("timerTitle");
+  updateTimerUI();
+
   populateExerciseSelects();
   populateBarSelect();
-  if (currentUser){ renderRmList(); renderAttendance(); }
+  if (currentUser) renderRmList();
   recalcAll();
 }
 function setLang(l){
@@ -980,7 +1203,7 @@ function hideSplash(){
     setTimeout(()=> el.remove(), 500);
   }, wait);
 }
-setTimeout(hideSplash, 6000); // rede de segurança caso a autenticação demore/falhe
+setTimeout(hideSplash, 6000);
 
 // ---------- auth state ----------
 if (isConfigured){
@@ -992,11 +1215,8 @@ if (isConfigured){
       $("tabbar").classList.remove("hide");
       $("userEmail").textContent = user.email;
       listenRms();
-      listenAttendance();
     } else {
       if (unsubscribeRms) unsubscribeRms();
-      if (unsubscribeAtt) unsubscribeAtt();
-      attendance = {};
       $("appView").classList.add("hide");
       $("tabbar").classList.add("hide");
       $("authView").classList.remove("hide");
@@ -1076,7 +1296,6 @@ $("addRmBtn").addEventListener("click", async ()=>{
   }
 });
 
-// edit modal
 let editingName = null;
 function openEditModal(name){
   editingName = name;
@@ -1102,99 +1321,20 @@ $("deleteRmBtn").addEventListener("click", async ()=>{
   toast(t("toastDeleted"));
 });
 
-// ---------- presença (check-in por QR) ----------
-// O QR do box aponta para:  https://USUARIO.github.io/REPOSITORIO/?checkin=box
-const CHECKIN_CODE = "box";
-let attendance = {};            // { "2026-10-08": {createdAt, ...} }
-let unsubscribeAtt = null;
-let pendingCheckin = false;
-
-(function detectCheckinParam(){
-  const params = new URLSearchParams(location.search);
-  if (params.get("checkin") === CHECKIN_CODE){
-    pendingCheckin = true;
-    sessionStorage.setItem("famcross_pending_checkin", "1");
-    history.replaceState(null, "", location.pathname); // limpa a URL
-  } else if (sessionStorage.getItem("famcross_pending_checkin") === "1"){
-    pendingCheckin = true;
-  }
-})();
-
-function todayKey(){
-  const d = new Date();
-  const pad = (n)=> String(n).padStart(2, "0");
-  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
-}
-function listenAttendance(){
-  const ref = collection(db, "users", currentUser.uid, "attendance");
-  unsubscribeAtt = onSnapshot(ref, (snap)=>{
-    attendance = {};
-    snap.forEach(d=> attendance[d.id] = d.data());
-    renderAttendance();
-  }, (err)=>{ console.error(err); });
-  if (pendingCheckin) doCheckin();
-}
-async function doCheckin(){
-  pendingCheckin = false;
-  sessionStorage.removeItem("famcross_pending_checkin");
-  const key = todayKey();
-  const locale = lang === "pt" ? "pt-BR" : "es-PY";
-  try{
-    const ref = doc(db, "users", currentUser.uid, "attendance", key);
-    const existing = await getDoc(ref);
-    switchTab("att");
-    if (existing.exists()){
-      toast(t("checkinAlready"));
-      return;
-    }
-    await setDoc(ref, { date: key, createdAt: serverTimestamp(), source: "qr" });
-    const now = new Date();
-    $("checkinWhen").textContent =
-      now.toLocaleDateString(locale, { weekday:"long", day:"2-digit", month:"long" }) +
-      " · " + now.toLocaleTimeString(locale, { hour:"2-digit", minute:"2-digit" });
-    $("checkinModal").classList.remove("hide");
-  } catch(e){
-    console.error(e);
-    toast(t("checkinError"));
-  }
-}
-function renderAttendance(){
-  const keys = Object.keys(attendance).sort().reverse();
-  const monthPrefix = todayKey().slice(0, 7);
-  $("attTotalNum").textContent = keys.length;
-  $("attMonthNum").textContent = keys.filter(k=> k.startsWith(monthPrefix)).length;
-  const list = $("attList");
-  if (keys.length === 0){
-    list.innerHTML = `<div class="empty-state">${t("attEmpty")}</div>`;
-    return;
-  }
-  const locale = lang === "pt" ? "pt-BR" : "es-PY";
-  list.innerHTML = "";
-  keys.forEach(k=>{
-    const [y, m, d] = k.split("-").map(Number);
-    const dateStr = new Date(y, m-1, d).toLocaleDateString(locale, { weekday:"short", day:"2-digit", month:"2-digit", year:"numeric" });
-    const ts = attendance[k].createdAt?.toDate ? attendance[k].createdAt.toDate() : null;
-    const timeStr = ts ? ts.toLocaleTimeString(locale, { hour:"2-digit", minute:"2-digit" }) : "";
-    const row = document.createElement("div");
-    row.className = "att-row";
-    row.innerHTML = `<span class="att-date">${dateStr}</span><span class="att-time">${timeStr}</span>`;
-    list.appendChild(row);
-  });
-}
-$("closeCheckinBtn").addEventListener("click", ()=> $("checkinModal").classList.add("hide"));
-$("checkinModal").addEventListener("click", (e)=>{ if (e.target.id === "checkinModal") $("checkinModal").classList.add("hide"); });
-
 // ---------- tabs ----------
 $("tabBtnRms").addEventListener("click", ()=> switchTab("rms"));
 $("tabBtnCalc").addEventListener("click", ()=> switchTab("calc"));
-$("tabBtnAtt").addEventListener("click", ()=> switchTab("att"));
+$("tabBtnRounds").addEventListener("click", ()=> switchTab("rounds"));
+$("tabBtnTimer").addEventListener("click", ()=> switchTab("timer"));
 function switchTab(tab){
   $("rmsTab").classList.toggle("hide", tab!=="rms");
   $("calcTab").classList.toggle("hide", tab!=="calc");
-  $("attTab").classList.toggle("hide", tab!=="att");
+  $("roundsTab").classList.toggle("hide", tab!=="rounds");
+  $("timerTab").classList.toggle("hide", tab!=="timer");
   $("tabBtnRms").classList.toggle("active", tab==="rms");
   $("tabBtnCalc").classList.toggle("active", tab==="calc");
-  $("tabBtnAtt").classList.toggle("active", tab==="att");
+  $("tabBtnRounds").classList.toggle("active", tab==="rounds");
+  $("tabBtnTimer").classList.toggle("active", tab==="timer");
 }
 
 // ---------- info modal ----------
@@ -1245,7 +1385,7 @@ function recalcAll(){
     const kgBase = unit === "kg" ? base : base / KG_TO_LB;
     const total = roundToPlate(kgBase * pct/100);
     result.textContent = total + " " + unit;
-    platesEl.innerHTML = platesLabel(total);
+    platesEl.innerHTML = renderBarDiagramHtml(total) + `<div style="text-align:center; margin-top:4px;">${platesLabel(total)}</div>`;
   } else {
     result.textContent = "—";
     platesEl.innerHTML = "";
@@ -1258,12 +1398,13 @@ function renderZone(elId, pcts, base, cls){
     const row = document.createElement("div");
     let valStr = "—";
     let plates = "";
+    let totalKgLb = 0;
     let hasValue = false;
     if (!isNaN(base)){
       const kgBase = unit === "kg" ? base : base / KG_TO_LB;
-      const total = roundToPlate(kgBase * p/100);
-      valStr = total.toString();
-      plates = platesLabel(total);
+      totalKgLb = roundToPlate(kgBase * p/100);
+      valStr = totalKgLb.toString();
+      plates = platesLabel(totalKgLb);
       hasValue = true;
     }
     row.className = "pct-row" + (hasValue ? "" : " disabled");
@@ -1277,56 +1418,254 @@ function renderZone(elId, pcts, base, cls){
       ${hasValue ? '<span class="expand-hint">⤢</span>' : ""}
     `;
     if (hasValue){
-      row.addEventListener("click", ()=> openPctModal(p, valStr, plates, cls));
+      row.addEventListener("click", ()=> openPctModal(p, valStr, totalKgLb, cls));
     }
     el.appendChild(row);
   });
 }
 
 // ---------- modal de percentual ampliado ----------
-function openPctModal(pct, valStr, platesHtml, cls){
+function openPctModal(pct, valStr, totalWeight, cls){
   $("pctModalDot").className = "dot " + cls;
   $("pctModalZoneLabel").textContent = t(ZONE_KEY[cls]);
   $("pctModalPct").textContent = pct + "%";
   $("pctModalVal").innerHTML = `${valStr} <small id="pctModalUnit">${unit}</small>`;
-  $("pctModalPlates").innerHTML = platesHtml || "";
+  $("pctModalDiagram").innerHTML = renderBarDiagramHtml(totalWeight);
+  $("pctModalPlates").innerHTML = platesLabel(totalWeight);
   $("pctModal").classList.remove("hide");
 }
 $("pctModal").addEventListener("click", (e)=>{ if (e.target.id === "pctModal") $("pctModal").classList.add("hide"); });
 $("closePctBtn").addEventListener("click", ()=> $("pctModal").classList.add("hide"));
 
-// primeira renderização (idioma, selects, calculadora) mesmo antes do login
+// ---------- CONTADOR DE RONDAS (CHALK COUNTER) ----------
+let roundsState = JSON.parse(localStorage.getItem("famcross_rounds") || "null") || {
+  count: 0,
+  goal: "",
+  laps: []
+};
+
+function saveRoundsState(){
+  localStorage.setItem("famcross_rounds", JSON.stringify(roundsState));
+}
+
+function renderChalkMarks(count){
+  const container = $("chalkMarks");
+  container.innerHTML = "";
+  if (count <= 0) return;
+
+  const fullGroups = Math.floor(count / 5);
+  const remainder = count % 5;
+
+  for (let g = 0; g < fullGroups; g++) {
+    const grp = document.createElement("div");
+    grp.className = "tally-group";
+    grp.innerHTML = `
+      <span class="tally-stick"></span>
+      <span class="tally-stick"></span>
+      <span class="tally-stick"></span>
+      <span class="tally-stick"></span>
+      <span class="tally-slash"></span>
+    `;
+    container.appendChild(grp);
+  }
+
+  if (remainder > 0) {
+    const grp = document.createElement("div");
+    grp.className = "tally-group";
+    for (let s = 0; s < remainder; s++) {
+      grp.innerHTML += `<span class="tally-stick"></span>`;
+    }
+    container.appendChild(grp);
+  }
+}
+
+function renderRoundsUI(){
+  const count = roundsState.count;
+  const goal = parseInt(roundsState.goal);
+  const numEl = $("roundsCountDisplay");
+  const goalSubEl = $("roundsGoalSub");
+
+  numEl.textContent = count;
+  $("roundsGoalInput").value = roundsState.goal || "";
+
+  if (!isNaN(goal) && goal > 0) {
+    goalSubEl.classList.remove("hide");
+    if (count >= goal) {
+      numEl.classList.add("goal-reached");
+      goalSubEl.textContent = `${count} / ${goal} — ${t("roundsGoalDone")}`;
+    } else {
+      numEl.classList.remove("goal-reached");
+      goalSubEl.textContent = `${count} / ${goal}`;
+    }
+  } else {
+    numEl.classList.remove("goal-reached");
+    goalSubEl.classList.add("hide");
+  }
+
+  renderChalkMarks(count);
+
+  const lapsEl = $("roundsLaps");
+  if (roundsState.laps.length > 0) {
+    lapsEl.classList.remove("hide");
+    lapsEl.innerHTML = roundsState.laps.slice().reverse().map(l => `
+      <div class="lap-item">
+        <span><b>${t("roundLabelSingle")} ${l.round}</b></span>
+        <span>${l.time}</span>
+      </div>
+    `).join("");
+  } else {
+    lapsEl.classList.add("hide");
+    lapsEl.innerHTML = "";
+  }
+}
+
+$("roundPlusBtn").addEventListener("click", ()=>{
+  roundsState.count++;
+  const now = new Date();
+  const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  roundsState.laps.push({ round: roundsState.count, time: timeStr });
+  if (navigator.vibrate) navigator.vibrate(45);
+  saveRoundsState();
+  renderRoundsUI();
+});
+
+$("roundMinusBtn").addEventListener("click", ()=>{
+  if (roundsState.count <= 0) return;
+  roundsState.count--;
+  roundsState.laps.pop();
+  if (navigator.vibrate) navigator.vibrate(25);
+  saveRoundsState();
+  renderRoundsUI();
+});
+
+$("roundsGoalInput").addEventListener("input", (e)=>{
+  roundsState.goal = e.target.value;
+  saveRoundsState();
+  renderRoundsUI();
+});
+
+$("roundsResetBtn").addEventListener("click", ()=>{
+  roundsState.count = 0;
+  roundsState.laps = [];
+  if (navigator.vibrate) navigator.vibrate([30, 50, 30]);
+  saveRoundsState();
+  renderRoundsUI();
+});
+
+// ---------- TIMER LOGIC ----------
+let timerMode = "rest"; // rest | emom | stopwatch
+let timerInterval = null;
+let timerSecondsLeft = 90;
+let timerRunning = false;
+
+function updateTimerUI(){
+  const disp = $("timerDisplay");
+  const btn = $("timerStartBtn");
+  const config = $("timerConfigArea");
+
+  $("modeRest").classList.toggle("active", timerMode === "rest");
+  $("modeEmom").classList.toggle("active", timerMode === "emom");
+  $("modeStopwatch").classList.toggle("active", timerMode === "stopwatch");
+
+  if (timerMode === "stopwatch") {
+    config.style.display = "none";
+    disp.textContent = formatTimeMMSS(timerSecondsLeft);
+  } else {
+    config.style.display = "flex";
+    disp.textContent = formatTimeMMSS(timerSecondsLeft);
+  }
+
+  btn.textContent = timerRunning ? t("btnPause") : t("btnStart");
+}
+
+function formatTimeMMSS(sec){
+  const m = Math.floor(sec / 60);
+  const s = sec % 60;
+  return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+document.querySelectorAll(".timer-modes button").forEach(b => {
+  b.addEventListener("click", (e) => {
+    stopTimer();
+    timerMode = e.target.dataset.mode;
+    if (timerMode === "stopwatch") {
+      timerSecondsLeft = 0;
+    } else if (timerMode === "rest") {
+      timerSecondsLeft = parseInt($("timerSelectVal").value) || 90;
+    } else if (timerMode === "emom") {
+      timerSecondsLeft = 60;
+    }
+    updateTimerUI();
+  });
+});
+
+$("timerSelectVal").addEventListener("change", (e)=>{
+  if (!timerRunning && timerMode !== "stopwatch") {
+    timerSecondsLeft = parseInt(e.target.value);
+    updateTimerUI();
+  }
+});
+
+$("timerStartBtn").addEventListener("click", ()=>{
+  if (timerRunning) {
+    pauseTimer();
+  } else {
+    startTimer();
+  }
+});
+
+$("timerResetBtn").addEventListener("click", ()=>{
+  stopTimer();
+  if (timerMode === "stopwatch") {
+    timerSecondsLeft = 0;
+  } else if (timerMode === "rest") {
+    timerSecondsLeft = parseInt($("timerSelectVal").value) || 90;
+  } else if (timerMode === "emom") {
+    timerSecondsLeft = 60;
+  }
+  updateTimerUI();
+});
+
+function startTimer(){
+  timerRunning = true;
+  updateTimerUI();
+  timerInterval = setInterval(()=>{
+    if (timerMode === "stopwatch") {
+      timerSecondsLeft++;
+    } else {
+      if (timerSecondsLeft > 0) {
+        timerSecondsLeft--;
+        if (timerSecondsLeft <= 3 && timerSecondsLeft > 0) {
+          if (navigator.vibrate) navigator.vibrate(100);
+        }
+      }
+      if (timerSecondsLeft === 0) {
+        if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+        if (timerMode === "emom") {
+          timerSecondsLeft = 60; // reinicia o minuto para o próximo round
+        } else {
+          stopTimer();
+        }
+      }
+    }
+    $("timerDisplay").textContent = formatTimeMMSS(timerSecondsLeft);
+  }, 1000);
+}
+
+function pauseTimer(){
+  timerRunning = false;
+  clearInterval(timerInterval);
+  updateTimerUI();
+}
+
+function stopTimer(){
+  timerRunning = false;
+  clearInterval(timerInterval);
+}
+
+// Inicialização
 applyLanguage();
 </script>
 
-<!--
-=================================================================
- REGRAS DE SEGURANÇA SUGERIDAS PARA O FIRESTORE (Firebase Console
- > Firestore Database > Regras). Garantem que cada usuário só
- acesse os próprios dados:
-
- rules_version = '2';
- service cloud.firestore {
-   match /databases/{database}/documents {
-     match /users/{userId}/maxes/{exerciseId} {
-       allow read, write: if request.auth != null && request.auth.uid == userId;
-     }
-     match /users/{userId}/attendance/{day} {
-       allow read, write: if request.auth != null && request.auth.uid == userId;
-     }
-   }
- }
-
- DEPLOY NO GITHUB PAGES:
- - Coloque este arquivo (index.html) JUNTO com os seguintes, todos na
-   raiz do repositório:
-     logo.jpg, site.webmanifest, favicon-16.png, favicon-32.png,
-     apple-touch-icon.png, icon-192.png, icon-512.png, qr-box.html
- - Em Settings > Pages, escolha "Deploy from a branch", branch main,
-   pasta "/ (root)". Não precisa de build.
- - No Firebase (Authentication > Settings > Authorized domains),
-   adicione USUARIO.github.io.
-=================================================================
--->
 </body>
 </html>
